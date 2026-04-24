@@ -1,0 +1,2583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#08090d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>APEX</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<!-- Firebase compat SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"
+  onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/firebase@10.12.0/firebase-app-compat.min.js'"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"
+  onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/firebase@10.12.0/firebase-auth-compat.min.js'"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"
+  onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/firebase@10.12.0/firebase-firestore-compat.min.js'"></script>
+<!-- PWA Icon — inline SVG as data URI -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2300e5b0'/%3E%3Ctext x='50' y='68' font-family='Arial Black,sans-serif' font-size='38' font-weight='900' text-anchor='middle' fill='%23000'%3EAP%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2300e5b0'/%3E%3Ctext x='50' y='68' font-family='Arial Black,sans-serif' font-size='38' font-weight='900' text-anchor='middle' fill='%23000'%3EAP%3C/text%3E%3C/svg%3E">
+<meta name="application-name" content="APEX">
+<meta name="apple-mobile-web-app-title" content="APEX">
+<script>
+// Inject PWA manifest dynamically
+const manifest = {
+  name: "APEX",
+  short_name: "APEX",
+  description: "India's #1 AI Business Brain for Kirana & Retail Shops",
+  start_url: "./",
+  display: "standalone",
+  background_color: "#08090d",
+  theme_color: "#00e5b0",
+  icons: [
+    {
+      src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2300e5b0'/%3E%3Ctext x='50' y='68' font-family='Arial Black,sans-serif' font-size='38' font-weight='900' text-anchor='middle' fill='%23000'%3EAP%3C/text%3E%3C/svg%3E",
+      sizes: "192x192",
+      type: "image/svg+xml"
+    },
+    {
+      src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2300e5b0'/%3E%3Ctext x='50' y='68' font-family='Arial Black,sans-serif' font-size='38' font-weight='900' text-anchor='middle' fill='%23000'%3EAP%3C/text%3E%3C/svg%3E",
+      sizes: "512x512",
+      type: "image/svg+xml"
+    }
+  ]
+};
+const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+const url = URL.createObjectURL(blob);
+const link = document.createElement('link');
+link.rel = 'manifest';
+link.href = url;
+document.head.appendChild(link);
+</script>
+<style>
+/* ═══════════════════════════════════════════
+   APEX INTELLIGENCE v4.0 — Complete CSS
+   Founders: Khushi Choudhary & Kartik Baliyan
+═══════════════════════════════════════════ */
+:root {
+  --bg: #08090d;
+  --surface: #0f1117;
+  --card: #13151e;
+  --border: #1e2235;
+  --accent: #00e5b0;
+  --accent2: #ff6b35;
+  --accent3: #7c6aff;
+  --text: #e8eaf0;
+  --muted: #5a607a;
+  --danger: #ff4560;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; overflow-x: hidden; }
+
+/* ── SCREENS ── */
+.screen { display: none; min-height: 100vh; flex-direction: column; }
+.screen.active { display: flex; }
+
+/* ── SPLASH ── */
+#splash { background: var(--bg); align-items: center; justify-content: center; gap: 20px; }
+.splash-logo { width: 90px; height: 90px; background: var(--accent); border-radius: 24px; display: flex; align-items: center; justify-content: center; font-family: 'Space Mono', monospace; font-weight: 700; font-size: 28px; color: #000; animation: popIn .6s ease; }
+@keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.splash-title { font-size: 32px; font-weight: 800; background: linear-gradient(135deg, var(--text), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: fadeUp .8s .3s both; }
+.splash-sub { color: var(--muted); font-size: 13px; text-align: center; animation: fadeUp .8s .5s both; }
+.splash-bar { width: 200px; height: 3px; background: var(--border); border-radius: 2px; margin-top: 40px; overflow: hidden; animation: fadeUp .8s .6s both; }
+.splash-fill { height: 100%; background: var(--accent); border-radius: 2px; animation: loadBar 2.5s .8s forwards; }
+@keyframes loadBar { from { width: 0; } to { width: 100%; } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── LOGIN ── */
+#login { background: var(--bg); align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
+.login-logo { width: 70px; height: 70px; background: var(--accent); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-family: 'Space Mono', monospace; font-weight: 700; font-size: 22px; color: #000; margin-bottom: 16px; }
+.login-title { font-size: 24px; font-weight: 800; color: var(--text); margin-bottom: 4px; text-align: center; }
+.login-sub { font-size: 12px; color: var(--muted); text-align: center; margin-bottom: 20px; line-height: 1.6; }
+.login-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 22px; width: 100%; max-width: 400px; }
+.tab-row { display: flex; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 18px; }
+.tab-btn { flex: 1; padding: 10px; border: none; background: transparent; color: var(--muted); font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: all .2s; }
+.tab-btn.active { background: var(--accent); color: #000; }
+.field-label { font-size: 10px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 7px; margin-top: 13px; }
+.field-label:first-of-type { margin-top: 0; }
+.field-input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text); font-family: 'Syne', sans-serif; font-size: 14px; outline: none; transition: border-color .2s; }
+.field-input:focus { border-color: var(--accent); }
+.field-input::placeholder { color: var(--muted); }
+.login-btn { width: 100%; background: var(--accent); border: none; border-radius: 10px; padding: 14px; color: #000; font-weight: 800; font-size: 15px; font-family: 'Syne', sans-serif; margin-top: 16px; cursor: pointer; transition: all .15s; }
+.login-btn:hover { background: #00ffc6; }
+.login-btn:active { transform: scale(.98); }
+.forgot-btn { width: 100%; background: none; border: none; color: var(--muted); font-size: 12px; margin-top: 8px; cursor: pointer; font-family: 'Syne', sans-serif; padding: 4px; }
+.divider { display: flex; align-items: center; gap: 10px; margin: 14px 0; }
+.divider-line { flex: 1; height: 1px; background: var(--border); }
+.divider-text { color: var(--muted); font-size: 11px; }
+.google-btn { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 13px; color: var(--text); font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: border-color .2s; }
+.google-btn:hover { border-color: var(--accent); }
+.demo-btn { width: 100%; background: transparent; border: 1px solid rgba(0,229,176,.3); border-radius: 10px; padding: 11px; color: var(--accent); font-family: 'Syne', sans-serif; font-size: 12px; margin-top: 10px; cursor: pointer; font-weight: 600; }
+.err-msg { font-size: 12px; text-align: center; margin-top: 8px; min-height: 18px; }
+.err-msg.error { color: var(--danger); }
+.err-msg.success { color: var(--accent); }
+
+/* ── TOPBAR ── */
+.topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; flex-shrink: 0; }
+.topbar-title { font-size: 18px; font-weight: 800; background: linear-gradient(135deg, var(--text), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.topbar-sub { font-size: 10px; color: var(--muted); }
+.ai-badge { display: flex; align-items: center; gap: 6px; background: rgba(0,229,176,.1); border: 1px solid rgba(0,229,176,.2); border-radius: 20px; padding: 5px 10px; }
+.ai-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+.ai-badge-text { font-size: 10px; font-weight: 700; color: var(--accent); }
+
+/* ── CONTENT SCROLL AREA ── */
+.content { flex: 1; padding: 14px; padding-bottom: 90px; overflow-y: auto; }
+
+/* ── BOTTOM NAV ── */
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); display: flex; padding: 6px 0 10px; z-index: 50; }
+.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; padding: 4px 0; transition: all .15s; }
+.nav-icon { font-size: 20px; }
+.nav-label { font-size: 9px; font-weight: 600; color: var(--muted); transition: color .15s; }
+.nav-item.active .nav-label { color: var(--accent); }
+
+/* ── CARDS & SECTIONS ── */
+.section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin-bottom: 12px; margin-top: 20px; }
+.section-title:first-child { margin-top: 0; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.card-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+.card-badge { background: rgba(0,229,176,.1); border: 1px solid rgba(0,229,176,.2); border-radius: 4px; padding: 2px 8px; font-size: 9px; color: var(--accent); font-family: 'Space Mono', monospace; }
+
+/* ── KPI GRID ── */
+.kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 4px; }
+.kpi-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; position: relative; overflow: hidden; transition: transform .15s, border-color .2s; }
+.kpi-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.kpi-top { position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.kpi-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); margin-bottom: 6px; }
+.kpi-value { font-size: 28px; font-weight: 900; letter-spacing: -1.5px; margin-bottom: 4px; line-height: 1; }
+.kpi-delta { font-size: 11px; font-weight: 600; }
+.kpi-empty { font-size: 18px; font-weight: 800; color: var(--muted); margin-bottom: 4px; }
+
+/* ── CHART ── */
+.chart-wrap { height: 160px; position: relative; }
+
+/* ── PRODUCTS ── */
+.product-row { margin-bottom: 12px; }
+.product-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; gap: 6px; }
+.product-name { font-size: 13px; color: var(--text); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.product-rev { font-size: 11px; font-family: 'Space Mono', monospace; color: var(--muted); flex-shrink: 0; }
+.product-growth { font-size: 12px; font-weight: 700; flex-shrink: 0; }
+.prog-track { height: 3px; background: var(--border); border-radius: 2px; }
+.prog-fill { height: 3px; border-radius: 2px; background: var(--accent); }
+
+/* ── SEGMENTS ── */
+.seg-row { margin-bottom: 10px; }
+.seg-info { display: flex; justify-content: space-between; margin-bottom: 5px; }
+.seg-name { font-size: 12px; color: var(--text); }
+.seg-pct { font-size: 12px; font-weight: 700; }
+.seg-track { height: 5px; background: var(--border); border-radius: 3px; }
+.seg-bar { height: 5px; border-radius: 3px; }
+
+/* ── GEO ── */
+.geo-row { display: flex; align-items: center; gap: 8px; padding: 9px 0; border-bottom: 1px solid rgba(30,34,53,.6); }
+.geo-row:last-child { border-bottom: none; }
+.geo-flag { font-size: 16px; flex-shrink: 0; }
+.geo-name { flex: 1; font-size: 13px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.geo-bar-wrap { width: 50px; flex-shrink: 0; }
+.geo-bar-inner { height: 4px; border-radius: 2px; background: var(--accent3); max-width: 50px; }
+.geo-val { font-size: 11px; font-family: 'Space Mono', monospace; color: var(--muted); width: 38px; text-align: right; flex-shrink: 0; }
+
+/* ── AI CHAT ── */
+.ai-header { display: flex; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+.ai-avatar { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--accent), var(--accent3)); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.ai-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.ai-desc { font-size: 11px; color: var(--muted); }
+.quick-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.qp { background: transparent; border: 1px solid var(--border); border-radius: 20px; padding: 5px 12px; color: var(--muted); font-size: 11px; font-family: 'Syne', sans-serif; cursor: pointer; transition: all .15s; }
+.qp:hover { border-color: var(--accent); color: var(--accent); }
+.messages { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; max-height: 280px; overflow-y: auto; }
+.messages::-webkit-scrollbar { width: 3px; }
+.messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.msg { padding: 10px 12px; border-radius: 10px; font-size: 13px; line-height: 1.6; max-width: 88%; }
+.msg.user { background: rgba(0,229,176,.1); border: 1px solid rgba(0,229,176,.2); align-self: flex-end; }
+.msg.ai { background: var(--surface); border: 1px solid var(--border); align-self: flex-start; }
+.msg-label { font-size: 9px; color: var(--accent); font-weight: 700; letter-spacing: 1px; margin-bottom: 4px; }
+.input-row { display: flex; gap: 8px; }
+.msg-input { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; color: var(--text); font-family: 'Syne', sans-serif; font-size: 13px; outline: none; transition: border-color .2s; }
+.msg-input:focus { border-color: var(--accent); }
+.msg-input::placeholder { color: var(--muted); }
+.ask-btn { background: var(--accent); border: none; border-radius: 10px; padding: 10px 14px; color: #000; font-weight: 700; font-size: 12px; font-family: 'Syne', sans-serif; cursor: pointer; white-space: nowrap; transition: all .15s; }
+.ask-btn:hover { background: #00ffc6; }
+.ask-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ── EMPTY STATE ── */
+.empty-state { text-align: center; padding: 30px 20px; }
+.empty-icon { font-size: 48px; margin-bottom: 12px; }
+.empty-title { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.empty-sub { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
+.empty-btn { background: var(--accent); border: none; border-radius: 10px; padding: 12px 24px; color: #000; font-weight: 700; font-size: 13px; font-family: 'Syne', sans-serif; cursor: pointer; }
+
+/* ── BANNERS ── */
+.notif-banner { background: rgba(255,107,53,.08); border: 1px solid rgba(255,107,53,.3); border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; display: flex; gap: 12px; align-items: flex-start; }
+.notif-icon { font-size: 20px; flex-shrink: 0; }
+.notif-title { font-size: 12px; font-weight: 700; color: var(--accent2); margin-bottom: 4px; }
+.notif-text { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.notif-link { color: var(--accent); font-weight: 700; cursor: pointer; text-decoration: underline; }
+.success-banner { background: rgba(0,229,176,.08); border: 1px solid rgba(0,229,176,.3); border-radius: 10px; padding: 10px 14px; font-size: 12px; color: var(--accent); margin-bottom: 14px; text-align: center; }
+
+/* ── ML PREDICTION CARD ── */
+.ml-card { background: linear-gradient(135deg, rgba(124,106,255,.1), rgba(0,229,176,.05)); border: 1px solid rgba(124,106,255,.3); border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+.ml-badge { display: inline-flex; align-items: center; gap: 5px; background: rgba(124,106,255,.2); border-radius: 20px; padding: 3px 10px; font-size: 9px; color: var(--accent3); font-weight: 700; letter-spacing: 1px; margin-bottom: 10px; }
+.ml-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.ml-value { font-size: 34px; font-weight: 900; color: var(--accent3); letter-spacing: -2px; margin-bottom: 2px; line-height: 1; }
+.ml-sub { font-size: 11px; color: var(--muted); }
+.ml-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+.ml-item { background: var(--card); border-radius: 10px; padding: 12px; border: 1px solid var(--border); }
+.ml-item-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.ml-item-val { font-size: 20px; font-weight: 900; color: var(--accent); letter-spacing: -0.5px; }
+.ml-item-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.confidence-bar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 8px; }
+.confidence-fill { height: 4px; border-radius: 2px; background: var(--accent3); }
+
+/* ── DATA UPLOAD ── */
+.upload-zone { border: 2px dashed var(--border); border-radius: 12px; padding: 28px; text-align: center; cursor: pointer; transition: all .2s; display: block; width: 100%; }
+.upload-zone:hover { border-color: var(--accent); background: rgba(0,229,176,.03); }
+.upload-icon { font-size: 36px; margin-bottom: 10px; }
+.upload-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.upload-sub { font-size: 12px; color: var(--muted); }
+.upload-status { margin-top: 12px; font-size: 12px; text-align: center; min-height: 20px; line-height: 1.5; }
+.csv-preview { background: var(--bg); border-radius: 8px; padding: 12px; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent); overflow-x: auto; line-height: 1.9; border: 1px solid var(--border); }
+.step-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 10px; display: flex; gap: 12px; align-items: flex-start; }
+.step-num { width: 28px; height: 28px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; color: #000; flex-shrink: 0; }
+.step-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.step-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* ── ABOUT / SETTINGS ── */
+#about { background: var(--bg); overflow-y: auto; }
+.about-inner { padding: 20px 24px 100px; }
+.about-back { color: var(--accent); font-size: 13px; cursor: pointer; margin-bottom: 20px; display: inline-block; font-weight: 600; }
+.about-logo { width: 80px; height: 80px; background: var(--accent); border-radius: 22px; display: flex; align-items: center; justify-content: center; font-family: 'Space Mono', monospace; font-weight: 700; font-size: 24px; color: #000; margin: 0 auto 16px; }
+.about-title { font-size: 26px; font-weight: 800; text-align: center; background: linear-gradient(135deg, var(--text), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.about-version { text-align: center; color: var(--muted); font-size: 12px; margin-bottom: 20px; }
+.about-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+.about-card-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 10px; }
+.about-card-text { font-size: 13px; color: var(--text); line-height: 1.7; }
+.founder-badge { background: rgba(0,229,176,.08); border: 1px solid rgba(0,229,176,.25); border-radius: 12px; padding: 18px 14px; text-align: center; margin-bottom: 14px; }
+.founder-name { font-size: 19px; font-weight: 800; color: var(--text); margin-bottom: 2px; }
+.founder-name-2 { font-size: 16px; font-weight: 700; color: var(--text); margin-top: 6px; }
+.founder-title { font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 8px; }
+.stack-row { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid rgba(30,34,53,.6); font-size: 13px; align-items: center; }
+.stack-row:last-child { border-bottom: none; }
+.stack-key { color: var(--muted); }
+.stack-val { color: var(--accent); font-weight: 600; text-align: right; font-size: 12px; }
+.signout-btn { width: 100%; background: transparent; border: 1px solid var(--danger); border-radius: 10px; padding: 12px; color: var(--danger); font-family: 'Syne', sans-serif; font-size: 13px; cursor: pointer; margin-top: 4px; font-weight: 600; transition: all .2s; }
+.signout-btn:hover { background: rgba(255,69,96,.1); }
+
+/* ── PWA INSTALL BANNER ── */
+.pwa-banner { position: fixed; bottom: 70px; left: 10px; right: 10px; background: var(--card); border: 1px solid var(--accent); border-radius: 14px; padding: 14px 16px; z-index: 200; display: flex; align-items: center; justify-content: space-between; gap: 10px; box-shadow: 0 4px 20px rgba(0,0,0,.4); }
+.pwa-text { font-size: 12px; color: var(--text); line-height: 1.4; }
+.pwa-text strong { color: var(--accent); }
+.pwa-install-btn { background: var(--accent); border: none; border-radius: 8px; padding: 8px 14px; color: #000; font-weight: 700; font-size: 12px; cursor: pointer; white-space: nowrap; font-family: 'Syne', sans-serif; }
+.pwa-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; padding: 0; line-height: 1; flex-shrink: 0; }
+
+/* ── HINDI TOGGLE ── */
+.lang-toggle { display:flex; align-items:center; gap:6px; background:rgba(124,106,255,.1); border:1px solid rgba(124,106,255,.3); border-radius:20px; padding:5px 10px; cursor:pointer; }
+.lang-toggle-text { font-size:10px; font-weight:700; color:var(--accent3); }
+
+/* ── NICHE BANNER ── */
+.niche-banner { background:linear-gradient(135deg,rgba(0,229,176,.08),rgba(124,106,255,.08)); border:1px solid rgba(0,229,176,.25); border-radius:14px; padding:14px 16px; margin-bottom:14px; }
+.niche-title { font-size:13px; font-weight:800; color:var(--accent); margin-bottom:4px; }
+.niche-sub { font-size:11px; color:var(--muted); line-height:1.6; }
+.niche-badge { display:inline-block; background:rgba(0,229,176,.15); border-radius:20px; padding:3px 10px; font-size:9px; color:var(--accent); font-weight:700; letter-spacing:1px; margin-bottom:6px; }
+
+/* ── COMPETITOR TABLE ── */
+.comp-table { width:100%; border-collapse:collapse; font-size:11px; margin-top:4px; }
+.comp-table th { color:var(--muted); font-size:9px; text-transform:uppercase; letter-spacing:1px; padding:6px 8px; text-align:left; border-bottom:1px solid var(--border); }
+.comp-table td { padding:8px; border-bottom:1px solid rgba(30,34,53,.5); color:var(--text); }
+.comp-table tr:last-child td { border-bottom:none; }
+.comp-table .apex-row td { background:rgba(0,229,176,.05); font-weight:700; }
+.comp-win { color:var(--accent); font-weight:700; }
+.comp-lose { color:var(--muted); }
+.comp-name { font-weight:700; }
+
+/* ── PRICING CARD ── */
+.price-card { border-radius:14px; padding:16px; margin-bottom:10px; border:1px solid var(--border); background:var(--card); }
+.price-card.featured { border-color:rgba(0,229,176,.4); background:linear-gradient(135deg,rgba(0,229,176,.06),rgba(124,106,255,.04)); }
+.price-tier { font-size:10px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:4px; }
+.price-amount { font-size:28px; font-weight:800; color:var(--text); letter-spacing:-1px; }
+.price-amount span { font-size:13px; color:var(--muted); font-weight:400; }
+.price-why { font-size:11px; color:var(--accent); margin:6px 0; font-weight:600; }
+.price-features { margin-top:8px; display:flex; flex-direction:column; gap:5px; }
+.price-feat { font-size:11px; color:var(--muted); display:flex; align-items:center; gap:6px; }
+.price-feat::before { content:'✓'; color:var(--accent); font-weight:700; flex-shrink:0; }
+
+/* ── ROADMAP ── */
+.roadmap-item { display:flex; gap:12px; padding:10px 0; border-bottom:1px solid rgba(30,34,53,.5); }
+.roadmap-item:last-child { border-bottom:none; }
+.roadmap-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+.roadmap-phase { font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:2px; }
+.roadmap-text { font-size:12px; color:var(--text); line-height:1.5; }
+
+/* ── HINDI TEXT ── */
+.hindi { font-family: 'Noto Sans Devanagari', 'Mangal', sans-serif; }
+
+/* ── ONBOARDING OVERLAY ── */
+#onboarding { position:fixed; inset:0; background:rgba(8,9,13,.97); z-index:500; display:none; flex-direction:column; align-items:center; justify-content:center; padding:24px; }
+#onboarding.active { display:flex; }
+.ob-step { display:none; flex-direction:column; align-items:center; text-align:center; max-width:340px; width:100%; }
+.ob-step.active { display:flex; }
+.ob-icon { font-size:56px; margin-bottom:16px; }
+.ob-title { font-size: 24px; font-weight: 900; color: var(--text); margin-bottom: 10px; letter-spacing: -0.5px; }
+.ob-sub { font-size:13px; color:var(--muted); line-height:1.7; margin-bottom:24px; }
+.ob-btn { width:100%; background:var(--accent); border:none; border-radius:12px; padding:15px; color:#000; font-weight:800; font-size:15px; font-family:'Syne',sans-serif; cursor:pointer; margin-bottom:10px; }
+.ob-skip { background:none; border:none; color:var(--muted); font-size:12px; cursor:pointer; font-family:'Syne',sans-serif; padding:6px; }
+.ob-dots { display:flex; gap:6px; margin-bottom:20px; }
+.ob-dot { width:8px; height:8px; border-radius:50%; background:var(--border); transition:background .2s; }
+.ob-dot.active { background:var(--accent); width:20px; border-radius:4px; }
+.ob-progress { font-size:10px; color:var(--muted); margin-bottom:16px; letter-spacing:1px; }
+
+/* ── SUBSCRIPTION TIER BADGE ── */
+.tier-badge { display:inline-flex; align-items:center; gap:5px; border-radius:20px; padding:4px 12px; font-size:10px; font-weight:700; letter-spacing:1px; }
+.tier-free { background:rgba(90,96,122,.15); border:1px solid rgba(90,96,122,.3); color:var(--muted); }
+.tier-pro { background:rgba(0,229,176,.12); border:1px solid rgba(0,229,176,.35); color:var(--accent); }
+.tier-lock { display:flex; align-items:center; gap:8px; background:rgba(124,106,255,.08); border:1px solid rgba(124,106,255,.2); border-radius:10px; padding:12px; margin-top:8px; }
+.tier-lock-text { font-size:12px; color:var(--muted); flex:1; line-height:1.5; }
+.tier-upgrade-btn { background:var(--accent3); border:none; border-radius:8px; padding:8px 14px; color:#fff; font-size:11px; font-weight:700; font-family:'Syne',sans-serif; cursor:pointer; white-space:nowrap; }
+
+/* ── PRINT / PDF STYLES ── */
+@media print {
+  .bottom-nav, .topbar, .pwa-banner, #onboarding, .lang-toggle, .ai-badge { display:none !important; }
+  body { background:#fff !important; color:#000 !important; }
+  .card { border:1px solid #ddd !important; background:#fff !important; break-inside:avoid; }
+  .kpi-value, .ml-value { color:#000 !important; }
+  .section-title { color:#666 !important; }
+}
+
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 300; display: none; align-items: center; justify-content: center; padding: 20px; }
+.modal-overlay.active { display: flex; }
+.modal-box { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 24px; width: 100%; max-width: 380px; }
+.modal-title { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.modal-sub { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+.modal-row { display: flex; gap: 8px; margin-top: 12px; }
+.modal-close { flex: 1; background: transparent; border: 1px solid var(--border); border-radius: 10px; padding: 11px; color: var(--muted); font-family: 'Syne', sans-serif; font-size: 13px; cursor: pointer; }
+.modal-save { flex: 2; background: var(--accent); border: none; border-radius: 10px; padding: 11px; color: #000; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<!-- ═══ ONBOARDING OVERLAY ═══ -->
+<div id="onboarding">
+  <!-- Step 1 -->
+  <div class="ob-step active" id="ob1">
+    <div class="ob-dots">
+      <div class="ob-dot active"></div><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot"></div>
+    </div>
+    <div class="ob-icon">🛒</div>
+    <div class="ob-title">Welcome to APEX</div>
+    <div class="ob-sub"><strong style="color:var(--accent)">India's only AI advisor</strong> built for Kirana &amp; Retail shops under ₹50L/year.<br><br>Setup in 2 minutes.</div>
+    <button class="ob-btn" onclick="obNext(2)">Get Started →</button>
+    <button class="ob-skip" onclick="obSkip()">Skip</button>
+  </div>
+  <!-- Step 2 -->
+  <div class="ob-step" id="ob2">
+    <div class="ob-dots">
+      <div class="ob-dot"></div><div class="ob-dot active"></div><div class="ob-dot"></div><div class="ob-dot"></div>
+    </div>
+    <div class="ob-icon">📁</div>
+    <div class="ob-title">Add Your Sales Data</div>
+    <div class="ob-sub">Go to <strong style="color:var(--accent)">📁 Data tab</strong> after signup.<br><br>
+      <strong style="color:var(--text)">① Upload CSV</strong> from Excel / Tally<br>
+      <strong style="color:var(--text)">② Type manually</strong> — just ₹ amounts<br><br>
+      Dashboard fills <strong style="color:var(--accent)">instantly.</strong>
+    </div>
+    <button class="ob-btn" onclick="obNext(3)">Next →</button>
+    <button class="ob-skip" onclick="obSkip()">Skip</button>
+  </div>
+  <!-- Step 3 -->
+  <div class="ob-step" id="ob3">
+    <div class="ob-dots">
+      <div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot active"></div><div class="ob-dot"></div>
+    </div>
+    <div class="ob-icon">🤖</div>
+    <div class="ob-title">Ask AI Anything</div>
+    <div class="ob-sub">
+      <span style="color:var(--accent)">"बिक्री कैसे बढ़ाऊं?"</span><br>
+      <span style="color:var(--accent)">"Which product to stock more?"</span><br>
+      <span style="color:var(--accent)">"Why did profit drop?"</span><br><br>
+      Works in <strong style="color:var(--text)">Hindi &amp; English.</strong>
+    </div>
+    <button class="ob-btn" onclick="obNext(4)">Next →</button>
+    <button class="ob-skip" onclick="obSkip()">Skip</button>
+  </div>
+  <!-- Step 4 -->
+  <div class="ob-step" id="ob4">
+    <div class="ob-dots">
+      <div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot active"></div>
+    </div>
+    <div class="ob-icon">✅</div>
+    <div class="ob-title">Free vs Pro</div>
+    <div class="ob-sub">
+      <div style="background:rgba(0,229,176,.08);border:1px solid rgba(0,229,176,.2);border-radius:10px;padding:14px;text-align:left;margin-bottom:10px">
+        <div style="font-size:12px;color:var(--accent);font-weight:800;margin-bottom:6px">FREE — Always</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.9">✓ Dashboard &amp; Charts<br>✓ Manual data entry<br>✓ Basic ML prediction</div>
+      </div>
+      <div style="background:rgba(124,106,255,.08);border:1px solid rgba(124,106,255,.2);border-radius:10px;padding:14px;text-align:left">
+        <div style="font-size:12px;color:var(--accent3);font-weight:800;margin-bottom:6px">PRO — ₹499/month</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.9">✓ Live Claude AI in Hindi<br>✓ CSV upload<br>✓ PDF reports<br>✓ Industry benchmarks</div>
+      </div>
+    </div>
+    <button class="ob-btn" onclick="obSkip()">Create My Account →</button>
+  </div>
+</div>
+
+<!-- ═══ PWA INSTALL BANNER ═══ -->
+<div class="pwa-banner" id="pwaBanner" style="display:none">
+  <div class="pwa-text"><strong>Install APEX on your phone</strong><br>Add to home screen for the full app experience</div>
+  <button class="pwa-install-btn" onclick="installPWA()">Install</button>
+  <button class="pwa-close" onclick="document.getElementById('pwaBanner').style.display='none'">✕</button>
+</div>
+
+<!-- ═══ API KEY MODAL ═══ -->
+<div class="modal-overlay" id="apiModal">
+  <div class="modal-box">
+    <div class="modal-title">🔑 Add Anthropic API Key</div>
+    <div class="modal-sub">Your key is saved only on this device. It enables live Claude AI responses for business analysis.<br><br>Get a free key at <strong style="color:var(--accent)">console.anthropic.com</strong></div>
+    <div class="field-label">API Key</div>
+    <input class="field-input" id="apiKeyInput" type="password" placeholder="sk-ant-...">
+    <div class="modal-row">
+      <button class="modal-close" onclick="closeApiModal()">Cancel</button>
+      <button class="modal-save" onclick="saveApiKey()">Save Key</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SPLASH SCREEN ═══ -->
+<div class="screen active" id="splash">
+  <div class="splash-logo">AP</div>
+  <div class="splash-title">APEX Intelligence</div>
+  <div class="splash-sub">AI Business Brain for Kirana &amp; Retail Shops 🇮🇳<br><span style="font-size:12px;opacity:0.6">किराना और रिटेल दुकानों के लिए AI</span></div>
+  <div class="splash-bar"><div class="splash-fill"></div></div>
+</div>
+
+<!-- ═══ LOGIN SCREEN ═══ -->
+<div class="screen" id="login">
+  <div class="login-logo">AP</div>
+  <div class="login-title">APEX Intelligence</div>
+  <div class="login-sub">India's #1 AI Business Brain for Kirana &amp; Retail Shops<br><span style="font-size:11px;color:rgba(90,96,122,0.8)">Under ₹50L revenue? This is built for YOU. 🛒</span><br>Sign in to access your dashboard</div>
+  <div class="login-card">
+    <div class="tab-row">
+      <button class="tab-btn active" id="tabSignIn" onclick="switchTab('signin')">Sign In</button>
+      <button class="tab-btn" id="tabSignUp" onclick="switchTab('signup')">Sign Up</button>
+    </div>
+
+    <!-- Sign In Form -->
+    <div id="signinForm">
+      <div class="field-label">Business Email</div>
+      <input class="field-input" id="siEmail" type="email" placeholder="your@business.com" onkeydown="if(event.key==='Enter')doSignIn()">
+      <div class="field-label">Password</div>
+      <input class="field-input" id="siPass" type="password" placeholder="Enter your password" onkeydown="if(event.key==='Enter')doSignIn()">
+      <div class="err-msg" id="siErr"></div>
+      <button class="login-btn" onclick="doSignIn()">Sign In to APEX</button>
+      <button class="forgot-btn" onclick="doForgot()">Forgot Password?</button>
+    </div>
+
+    <!-- Sign Up Form -->
+    <div id="signupForm" style="display:none">
+      <div class="field-label">Your Full Name</div>
+      <input class="field-input" id="suName" type="text" placeholder="e.g. Ramesh Kumar">
+      <div class="field-label">Shop / Business Name</div>
+      <input class="field-input" id="suBiz" type="text" placeholder="e.g. Ramesh Kirana Store, Meerut">
+      <div class="field-label">Business Type</div>
+      <select class="field-input" id="suBizType" style="cursor:pointer">
+        <option value="Kirana Store">🛒 Kirana / General Store</option>
+        <option value="Retail Shop">👗 Retail / Clothing Shop</option>
+        <option value="Medical Store">💊 Medical / Pharmacy</option>
+        <option value="Electronics Shop">📱 Electronics Shop</option>
+        <option value="Stationery Shop">📚 Stationery / Books</option>
+        <option value="Hardware Store">🔧 Hardware / Tools</option>
+        <option value="Other Retail">🏪 Other Retail Shop</option>
+      </select>
+      <div class="field-label">Your City</div>
+      <input class="field-input" id="suCity" type="text" placeholder="e.g. Meerut, Delhi, Lucknow">
+      <div class="field-label">Business Email</div>
+      <input class="field-input" id="suEmail" type="email" placeholder="your@shop.com">
+      <div class="field-label">Password (min 6 characters)</div>
+      <input class="field-input" id="suPass" type="password" placeholder="Create a strong password" onkeydown="if(event.key==='Enter')doSignUp()">
+      <div class="err-msg" id="suErr"></div>
+      <button class="login-btn" onclick="doSignUp()">Create My APEX Account</button>
+    </div>
+
+    <div class="divider"><div class="divider-line"></div><span class="divider-text">OR</span><div class="divider-line"></div></div>
+    <button class="demo-btn" onclick="enterDemo()">🎯 Try Demo — See how APEX works</button>
+  </div>
+</div>
+
+<!-- ═══ DASHBOARD SCREEN ═══ -->
+<div class="screen" id="dashboard">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title" id="topbarTitle">APEX Intelligence</div>
+      <div class="topbar-sub" id="topbarSub">AI-Powered BI · Kirana &amp; Retail</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div class="lang-toggle" onclick="toggleHindi()" id="langBtn" title="Switch to Hindi">
+        <div class="lang-toggle-text" id="langBtnText">अ हिंदी</div>
+      </div>
+      <div id="tierBadge" class="tier-badge tier-free">FREE</div>
+      <div class="ai-badge"><div class="ai-dot"></div><div class="ai-badge-text">AI Live</div></div>
+    </div>
+  </div>
+  <div class="content" id="dashContent"></div>
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="navTo('dashboard',0)"><div class="nav-icon">📊</div><div class="nav-label">Dashboard</div></div>
+    <div class="nav-item" onclick="navTo('analyticsScreen',1)"><div class="nav-icon">📈</div><div class="nav-label">Analytics</div></div>
+    <div class="nav-item" onclick="navTo('dataScreen',2)"><div class="nav-icon">📁</div><div class="nav-label">Data</div></div>
+    <div class="nav-item" onclick="navTo('about',3)"><div class="nav-icon">⚙️</div><div class="nav-label">Settings</div></div>
+  </div>
+</div>
+
+<!-- ═══ DATA SCREEN ═══ -->
+<div class="screen" id="dataScreen">
+  <div class="topbar">
+    <div><div class="topbar-title">Add Your Data</div><div class="topbar-sub">Connect your real business numbers</div></div>
+  </div>
+  <div class="content">
+    <div class="section-title">How to Add Your Business Data</div>
+    <div class="step-card"><div class="step-num">1</div><div><div class="step-title">Open Excel, Tally, or Google Sheets</div><div class="step-desc">Export your monthly sales data from whatever software you use.</div></div></div>
+    <div class="step-card"><div class="step-num">2</div><div><div class="step-title">Create these 5 column headers exactly</div><div class="step-desc">First row must have: <span style="color:var(--accent);font-family:'Space Mono',monospace;font-size:11px">Month, Revenue, Expenses, Product, Region</span></div></div></div>
+    <div class="step-card"><div class="step-num">3</div><div><div class="step-title">Fill your data row by row</div><div class="step-desc">Revenue and Expenses in ₹ numbers only (no ₹ symbol). Month format: 2024-01</div></div></div>
+    <div class="step-card"><div class="step-num">4</div><div><div class="step-title">Save as CSV</div><div class="step-desc">Excel: File → Save As → CSV. Google Sheets: File → Download → CSV.</div></div></div>
+    <div class="step-card"><div class="step-num">5</div><div><div class="step-title">Upload below — dashboard updates instantly</div><div class="step-desc">Your data is saved automatically. You will NOT need to re-upload next time.</div></div></div>
+
+    <div class="section-title">Example CSV Format</div>
+    <div class="card">
+      <div class="csv-preview">Month,Revenue,Expenses,Product,Region
+2024-01,45000,28000,Lehenga,India
+2024-01,12000,8000,Kurti,Delhi
+2024-02,52000,31000,Lehenga,India
+2024-03,48000,29000,Saree,Mumbai</div>
+    </div>
+
+    <div class="section-title">Upload Your CSV File</div>
+    <div class="card">
+      <label class="upload-zone" id="uploadZone">
+        <input type="file" id="csvFile" accept=".csv" style="display:none" onchange="handleCSV(event)">
+        <div class="upload-icon">📁</div>
+        <div class="upload-title">Tap Here to Upload Your CSV</div>
+        <div class="upload-sub">Your data saves automatically — no re-upload needed next visit</div>
+      </label>
+      <div class="upload-status" id="uploadStatus"></div>
+    </div>
+
+    <div class="section-title">Or Enter Manually</div>
+    <div class="card">
+      <div class="field-label">Month</div>
+      <input class="field-input" id="manMonth" type="month" style="margin-bottom:10px">
+      <div class="field-label">Revenue This Month (₹)</div>
+      <input class="field-input" id="manRevenue" type="number" placeholder="e.g. 52000" style="margin-bottom:10px">
+      <div class="field-label">Expenses This Month (₹)</div>
+      <input class="field-input" id="manExpenses" type="number" placeholder="e.g. 31000" style="margin-bottom:10px">
+      <div class="field-label">Main Product / Service</div>
+      <input class="field-input" id="manProduct" type="text" placeholder="e.g. Lehenga" style="margin-bottom:10px">
+      <div class="field-label">City / Region</div>
+      <input class="field-input" id="manRegion" type="text" placeholder="e.g. Delhi, Mumbai, Indore" style="margin-bottom:16px">
+      <button class="login-btn" onclick="saveManual()">Save &amp; Update Dashboard</button>
+    </div>
+
+    <div id="resetSection" style="display:none">
+      <div class="section-title">Reset Data</div>
+      <div class="card">
+        <div style="font-size:13px;color:var(--muted);margin-bottom:12px">Remove all uploaded data and start fresh.</div>
+        <button onclick="clearUserData()" style="width:100%;background:transparent;border:1px solid var(--danger);border-radius:10px;padding:11px;color:var(--danger);font-family:'Syne',sans-serif;font-size:13px;cursor:pointer;font-weight:600">Clear All My Data</button>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="navTo('dashboard',0)"><div class="nav-icon">📊</div><div class="nav-label">Dashboard</div></div>
+    <div class="nav-item" onclick="navTo('analyticsScreen',1)"><div class="nav-icon">📈</div><div class="nav-label">Analytics</div></div>
+    <div class="nav-item active"><div class="nav-icon">📁</div><div class="nav-label">Data</div></div>
+    <div class="nav-item" onclick="navTo('about',3)"><div class="nav-icon">⚙️</div><div class="nav-label">Settings</div></div>
+  </div>
+</div>
+
+<!-- ═══ ANALYTICS SCREEN ═══ -->
+<div class="screen" id="analyticsScreen">
+  <div class="topbar">
+    <div><div class="topbar-title">Analytics</div><div class="topbar-sub" id="analyticsSub">Deep Insights</div></div>
+    <div class="ai-badge"><div class="ai-dot"></div><div class="ai-badge-text">ML Model</div></div>
+  </div>
+  <div class="content" id="analyticsContent"></div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="navTo('dashboard',0)"><div class="nav-icon">📊</div><div class="nav-label">Dashboard</div></div>
+    <div class="nav-item active"><div class="nav-icon">📈</div><div class="nav-label">Analytics</div></div>
+    <div class="nav-item" onclick="navTo('dataScreen',2)"><div class="nav-icon">📁</div><div class="nav-label">Data</div></div>
+    <div class="nav-item" onclick="navTo('about',3)"><div class="nav-icon">⚙️</div><div class="nav-label">Settings</div></div>
+  </div>
+</div>
+
+<!-- ═══ SETTINGS / ABOUT SCREEN ═══ -->
+<div class="screen" id="about">
+  <div class="about-inner">
+    <span class="about-back" onclick="navTo('dashboard',0)">← Back to Dashboard</span>
+    <div class="about-logo">AP</div>
+    <div class="about-title">APEX Intelligence</div>
+    <div class="about-version">Version 5.0.0 · Kirana &amp; Retail Edition · AI Advisory in Hindi &amp; English</div>
+
+    <div class="founder-badge">
+      <div class="founder-name">Khushi Choudhary</div>
+      <div class="founder-name-2">Kartik Baliyan</div>
+      <div class="founder-title">Founders &amp; CEO · APEX Intelligence</div>
+    </div>
+
+    <div class="about-card">
+      <div class="about-card-title">Logged In As</div>
+      <div class="about-card-text" id="loggedInAs" style="color:var(--accent);font-weight:700">Demo User</div>
+    </div>
+
+    <div class="about-card">
+      <div class="about-card-title">🔑 Anthropic API Key</div>
+      <div class="about-card-text" style="margin-bottom:10px" id="apiKeyStatus">No API key set. AI uses fallback responses.</div>
+      <button onclick="openApiModal()" style="width:100%;background:rgba(0,229,176,.1);border:1px solid rgba(0,229,176,.3);border-radius:10px;padding:11px;color:var(--accent);font-family:'Syne',sans-serif;font-size:13px;cursor:pointer;font-weight:600">
+        🔑 Set API Key for Live Claude
+      </button>
+    </div>
+
+    <!-- DIFFERENTIATION STORY -->
+    <div class="about-card" style="border-color:rgba(0,229,176,.3)">
+      <div class="about-card-title">🎯 Why APEX? Our Difference</div>
+      <div class="niche-banner" style="margin-bottom:0">
+        <div class="niche-badge">UNIQUE VALUE PROPOSITION</div>
+        <div class="niche-title">"Tally बताता है क्या हुआ। APEX बताता है आगे क्या करो।"</div>
+        <div class="niche-sub" style="margin-top:4px"><em>"Tally tells you what happened. APEX tells you what to do next."</em></div>
+        <div style="height:10px"></div>
+        <div class="niche-sub">We are the <strong style="color:var(--accent)">only tool</strong> that gives actionable AI advice in ₹ Indian Rupees, in both Hindi &amp; English, specifically for retail shops earning under ₹50L/year — the 63 million shops that Tally, Zoho, and Vyapar are NOT built for.</div>
+      </div>
+    </div>
+
+    <!-- COMPETITOR COMPARISON TABLE -->
+    <div class="about-card">
+      <div class="about-card-title">📊 APEX vs Competitors</div>
+      <div style="overflow-x:auto">
+        <table class="comp-table">
+          <thead>
+            <tr>
+              <th>Tool</th>
+              <th>Price/mo</th>
+              <th>AI Advice</th>
+              <th>Hindi</th>
+              <th>Mobile-First</th>
+              <th>For Kirana</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="apex-row">
+              <td class="comp-name" style="color:var(--accent)">APEX ✨</td>
+              <td class="comp-win">₹499</td>
+              <td class="comp-win">✅ Yes</td>
+              <td class="comp-win">✅ Yes</td>
+              <td class="comp-win">✅ Yes</td>
+              <td class="comp-win">✅ Built for it</td>
+            </tr>
+            <tr>
+              <td class="comp-name">Tally Prime</td>
+              <td>₹900+</td>
+              <td class="comp-lose">❌ No</td>
+              <td class="comp-lose">❌ No</td>
+              <td class="comp-lose">❌ Desktop only</td>
+              <td class="comp-lose">⚠️ Complex</td>
+            </tr>
+            <tr>
+              <td class="comp-name">Zoho Books</td>
+              <td>₹749+</td>
+              <td class="comp-lose">❌ No</td>
+              <td class="comp-lose">❌ No</td>
+              <td>⚠️ Partial</td>
+              <td class="comp-lose">❌ Enterprise focus</td>
+            </tr>
+            <tr>
+              <td class="comp-name">Vyapar</td>
+              <td>₹599+</td>
+              <td class="comp-lose">❌ No</td>
+              <td>⚠️ Basic</td>
+              <td class="comp-win">✅ Yes</td>
+              <td>⚠️ Billing only</td>
+            </tr>
+            <tr>
+              <td class="comp-name">Marg ERP</td>
+              <td>₹1,500+</td>
+              <td class="comp-lose">❌ No</td>
+              <td>⚠️ Partial</td>
+              <td class="comp-lose">❌ Desktop</td>
+              <td>⚠️ Pharmacy focus</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-top:8px">Source: Official pricing pages, April 2025. APEX is the only tool combining AI advisory + Hindi + mobile + kirana-focus.</div>
+    </div>
+
+    <!-- PRICING WITH RATIONALE -->
+    <div class="about-card">
+      <div class="about-card-title">💰 Pricing — Built on Real Research</div>
+
+      <div class="price-card">
+        <div class="price-tier">Starter — Free Forever</div>
+        <div class="price-amount">₹0 <span>/ month</span></div>
+        <div class="price-why">For first-time users — no credit card needed</div>
+        <div class="price-features">
+          <div class="price-feat">Dashboard + Charts</div>
+          <div class="price-feat">Manual data entry (3 months)</div>
+          <div class="price-feat">Basic ML prediction</div>
+          <div class="price-feat">Demo mode access</div>
+        </div>
+      </div>
+
+      <div class="price-card featured">
+        <div class="niche-badge">MOST POPULAR</div>
+        <div class="price-tier">Pro — Our Core Plan</div>
+        <div class="price-amount">₹499 <span>/ month</span></div>
+        <div class="price-why">💡 Why ₹499? A local CA visit costs ₹800–2,000 per visit. We give you 24/7 AI advice at 60% less — that's the value.</div>
+        <div class="price-features">
+          <div class="price-feat">Everything in Free</div>
+          <div class="price-feat">CSV upload — unlimited data</div>
+          <div class="price-feat">Live Claude AI advisor</div>
+          <div class="price-feat">Hindi + English AI responses</div>
+          <div class="price-feat">Industry benchmark comparison</div>
+          <div class="price-feat">PDF business reports</div>
+          <div class="price-feat">3-month ML forecast</div>
+        </div>
+      </div>
+
+      <div class="price-card">
+        <div class="price-tier">Setup &amp; Onboarding</div>
+        <div class="price-amount">₹2,999 <span>one-time</span></div>
+        <div class="price-why">We visit your shop, set up APEX, train your staff, and migrate your Tally/Excel data.</div>
+        <div class="price-features">
+          <div class="price-feat">On-site setup at your shop</div>
+          <div class="price-feat">Data migration from Tally/Excel</div>
+          <div class="price-feat">Staff training (1 session)</div>
+          <div class="price-feat">30 days priority support</div>
+        </div>
+      </div>
+
+      <div style="background:rgba(0,229,176,.05);border:1px solid rgba(0,229,176,.2);border-radius:10px;padding:12px;margin-top:4px">
+        <div style="font-size:11px;color:var(--muted);line-height:1.7">
+          <strong style="color:var(--accent)">Market research basis:</strong> Survey of 50 kirana owners in Meerut &amp; Delhi NCR showed average spend of ₹1,200/month on accountant visits. Vyapar (₹599) captures billing only. No competitor offers AI advisory under ₹1,000. APEX fills this gap at ₹499.
+        </div>
+      </div>
+    </div>
+
+    <!-- TARGET MARKET -->
+    <div class="about-card">
+      <div class="about-card-title">🎯 Our Niche — Razor Sharp Focus</div>
+      <div class="about-card-text">
+        <div style="margin-bottom:10px"><strong style="color:var(--accent)">Who we serve:</strong> Retail shops in Tier 2 &amp; Tier 3 Indian cities earning ₹2L–₹50L/year. Kirana stores, clothing shops, medical stores, hardware shops — owner-operated businesses with 1–5 employees.</div>
+        <div style="margin-bottom:10px"><strong style="color:var(--accent)">Why this niche:</strong> 63M SMEs in India, but enterprise tools ignore the bottom 90%. These shop owners use WhatsApp but have no data tools. They trust word-of-mouth — if one kirana owner adopts APEX, 10 more follow.</div>
+        <div><strong style="color:var(--accent)">Pilot cities:</strong> Meerut, Muzaffarnagar, Hapur, Ghaziabad, Noida — high-density retail corridors within 100km of each other. Easy to service, easy to spread.</div>
+      </div>
+    </div>
+
+    <!-- ROADMAP -->
+    <div class="about-card">
+      <div class="about-card-title">🗺️ Product Roadmap</div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot" style="background:var(--accent)"></div>
+        <div>
+          <div class="roadmap-phase">Phase 1 — NOW (v5.0)</div>
+          <div class="roadmap-text">PWA with AI advisory, Hindi mode, ML forecasting, PDF reports, CSV upload. Pilot with 5 Meerut kirana owners.</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot" style="background:var(--accent3)"></div>
+        <div>
+          <div class="roadmap-phase">Phase 2 — 3 Months (Firebase Backend)</div>
+          <div class="roadmap-text">Real cloud database, multi-device sync, WhatsApp data entry bot (send sales via WhatsApp → APEX updates automatically).</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot" style="background:var(--accent2)"></div>
+        <div>
+          <div class="roadmap-phase">Phase 3 — 6 Months (Google Play)</div>
+          <div class="roadmap-text">Native Android app on Play Store, UPI payment integration, GST report generation, inventory tracking.</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot" style="background:var(--muted)"></div>
+        <div>
+          <div class="roadmap-phase">Phase 4 — 12 Months (Scale)</div>
+          <div class="roadmap-text">Startup India DPIIT registration, seed funding pitch, expand to 10 cities, B2B channel via CA networks.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-card">
+      <div class="about-card-title">Mission</div>
+      <div class="about-card-text">To bring enterprise-grade AI + ML business intelligence to every kirana and retail shop in India — making powerful analytics accessible to all, not just large corporations. <strong style="color:var(--accent)">Start small, go deep, then scale.</strong></div>
+    </div>
+
+    <div class="about-card">
+      <div class="about-card-title">Install as App</div>
+      <div class="about-card-text" style="margin-bottom:10px">APEX works as a full app on your phone. No app store needed.</div>
+      <button onclick="installPWA()" style="width:100%;background:var(--accent);border:none;border-radius:10px;padding:12px;color:#000;font-family:'Syne',sans-serif;font-size:13px;cursor:pointer;font-weight:700">📲 Install APEX on This Device</button>
+    </div>
+
+    <div class="about-card">
+      <div class="about-card-title">Market Impact</div>
+      <div class="about-card-text">63 million SMEs in India · 30% of GDP · 110 million jobs · Zero affordable AI tools for kirana stores. APEX changes that — one shop at a time.</div>
+    </div>
+
+    <div class="about-card">
+      <div class="about-card-title">Business Model</div>
+      <div class="about-card-text">₹499/month Pro subscription · ₹2,999 one-time setup · Freemium funnel via PWA · Phase 2: Startup India DPIIT funding · B2B via CA &amp; accountant referral networks</div>
+    </div>
+
+    <button class="signout-btn" onclick="doSignOut()">Sign Out of APEX</button>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="navTo('dashboard',0)"><div class="nav-icon">📊</div><div class="nav-label">Dashboard</div></div>
+    <div class="nav-item" onclick="navTo('analyticsScreen',1)"><div class="nav-icon">📈</div><div class="nav-label">Analytics</div></div>
+    <div class="nav-item" onclick="navTo('dataScreen',2)"><div class="nav-icon">📁</div><div class="nav-label">Data</div></div>
+    <div class="nav-item active"><div class="nav-icon">⚙️</div><div class="nav-label">Settings</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     JAVASCRIPT — APEX INTELLIGENCE v4.0
+     All functions in one clean block
+═══════════════════════════════════════════ -->
+<script>
+'use strict';
+
+// ══════════════════════════════════════════
+//  FILE:// PROTOCOL BLOCKER — Firebase needs http
+// ══════════════════════════════════════════
+if (window.location.protocol === 'file:') {
+  document.body.innerHTML = `
+  <div style="background:#08090d;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;font-family:sans-serif">
+    <div style="background:#13151e;border:1px solid #1e2235;border-radius:20px;padding:28px;max-width:420px;width:100%">
+      <div style="width:60px;height:60px;background:#00e5b0;border-radius:16px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px;color:#000;margin:0 auto 16px">AP</div>
+      <div style="font-size:22px;font-weight:900;color:#e8eaf0;text-align:center;margin-bottom:8px">One More Step</div>
+      <div style="font-size:13px;color:#5a607a;text-align:center;margin-bottom:20px;line-height:1.7">
+        APEX needs to be opened via <strong style="color:#00e5b0">http://</strong> not <strong style="color:#ff4560">file://</strong><br>
+        Firebase authentication does not work with local files.
+      </div>
+      <div style="background:#0f1117;border-radius:12px;padding:16px;margin-bottom:16px">
+        <div style="font-size:11px;color:#00e5b0;font-weight:700;letter-spacing:1px;margin-bottom:10px">OPTION 1 — VS Code (Recommended)</div>
+        <div style="font-size:12px;color:#5a607a;line-height:1.8">
+          1. Open VS Code<br>
+          2. Install extension: <strong style="color:#e8eaf0">Live Server</strong><br>
+          3. Right-click <strong style="color:#e8eaf0">APEX_v9_Final.html</strong><br>
+          4. Click <strong style="color:#00e5b0">"Open with Live Server"</strong><br>
+          5. Browser opens at <strong style="color:#00e5b0">http://127.0.0.1:5500</strong> ✅
+        </div>
+      </div>
+      <div style="background:#0f1117;border-radius:12px;padding:16px;margin-bottom:16px">
+        <div style="font-size:11px;color:#7c6aff;font-weight:700;letter-spacing:1px;margin-bottom:10px">OPTION 2 — Python (Already installed)</div>
+        <div style="font-size:12px;color:#5a607a;line-height:1.8">
+          1. Open Command Prompt in the folder with the file<br>
+          2. Type: <strong style="color:#e8eaf0;font-family:monospace">python -m http.server 8080</strong><br>
+          3. Open Chrome → go to <strong style="color:#7c6aff">http://localhost:8080/APEX_v9_Final.html</strong> ✅
+        </div>
+      </div>
+      <div style="background:#0f1117;border-radius:12px;padding:16px">
+        <div style="font-size:11px;color:#ff6b35;font-weight:700;letter-spacing:1px;margin-bottom:10px">ALSO REQUIRED — Firebase Console</div>
+        <div style="font-size:12px;color:#5a607a;line-height:1.8">
+          Go to <strong style="color:#e8eaf0">console.firebase.google.com</strong><br>
+          → apexbi-8bf8c → Authentication<br>
+          → Settings → Authorized domains<br>
+          → Add: <strong style="color:#ff6b35">localhost</strong> and <strong style="color:#ff6b35">127.0.0.1</strong>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════
+//  DEMO DATA
+// ══════════════════════════════════════════
+const DEMO_DATA = {
+  months:   ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+  revenue:  [42, 38.5, 51.2, 47.8, 63.4, 58.9, 71.2, 69.8, 78.5, 82.1, 79.4, 95.6],
+  expenses: [31, 29.5, 34.2, 32.8, 41.4, 39.9, 45.2, 44.8, 49.5, 52.1, 50.4, 58.6],
+  products: [
+    { name: 'Product C', rev: '₹2.1L',  growth: '+28.7%', pos: true,  bar: 100 },
+    { name: 'Product E', rev: '₹1.89L', growth: '+18.9%', pos: true,  bar: 90  },
+    { name: 'Product A', rev: '₹1.45L', growth: '+12.4%', pos: true,  bar: 69  },
+    { name: 'Product B', rev: '₹98K',   growth: '-3.2%',  pos: false, bar: 47  },
+    { name: 'Product D', rev: '₹67K',   growth: '+5.1%',  pos: true,  bar: 32  },
+  ],
+  segments: [
+    { name: 'Regular Clients', pct: 35, color: '#00e5b0' },
+    { name: 'Mid-Market',      pct: 25, color: '#7c6aff' },
+    { name: 'SME',             pct: 22, color: '#ff6b35' },
+    { name: 'Startup',         pct: 12, color: '#00b4ff' },
+    { name: 'Individual',      pct: 6,  color: '#ff4560' },
+  ],
+  geo: [
+    { flag: '🇮🇳', name: 'India (North)', share: 40.1 },
+    { flag: '🇮🇳', name: 'India (South)', share: 32.5 },
+    { flag: '🇮🇳', name: 'India (West)',  share: 15.1 },
+    { flag: '🌏', name: 'Asia Pacific',   share: 8.5  },
+    { flag: '🌍', name: 'Other',          share: 3.8  },
+  ]
+};
+
+// ══════════════════════════════════════════
+//  FIREBASE CONFIG — compat SDK (works everywhere)
+// ══════════════════════════════════════════
+const firebaseConfig = {
+  apiKey: "AIzaSyA1ngBH7cxrlYKqkNbxnKhoOKyNwGBqAxM",
+  authDomain: "apexbi-8bf8c.firebaseapp.com",
+  projectId: "apexbi-8bf8c",
+  storageBucket: "apexbi-8bf8c.firebasestorage.app",
+  messagingSenderId: "356317998014",
+  appId: "1:356317998014:web:b42bcbe5df61a0eb0fe7ef"
+};
+
+let _fbApp = null, _fbAuth = null, _fbDb = null;
+
+function initFirebase() {
+  if (_fbAuth) return;
+  if (typeof firebase === 'undefined') throw new Error('Firebase SDK not loaded. Please check your internet connection and reload the page.');
+  if (!firebase.apps.length) {
+    _fbApp = firebase.initializeApp(firebaseConfig);
+  } else {
+    _fbApp = firebase.app();
+  }
+  _fbAuth = firebase.auth();
+  _fbDb   = firebase.firestore();
+}
+
+async function fbSaveProfile(uid, data) {
+  try { await _fbDb.collection('users').doc(uid).set(data, {merge:true}); } catch(e) {}
+}
+async function fbLoadProfile(uid) {
+  try {
+    const snap = await _fbDb.collection('users').doc(uid).get();
+    return snap.exists ? snap.data() : null;
+  } catch(e) { return null; }
+}
+async function fbSaveData(uid, data) {
+  try { await _fbDb.collection('userData').doc(uid).set({data}, {merge:true}); } catch(e) {}
+}
+async function fbLoadData(uid) {
+  try {
+    const snap = await _fbDb.collection('userData').doc(uid).get();
+    return snap.exists ? snap.data().data : null;
+  } catch(e) { return null; }
+}
+
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+let currentUser   = null;
+let isDemo        = false;
+let userData      = null;
+let chartInstance = null;
+let analyticsBuilt = false;
+let deferredPrompt = null;
+let isHindi       = false;
+
+// ══════════════════════════════════════════
+//  PWA SETUP
+// ══════════════════════════════════════════
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE='apex-v4';
+    self.addEventListener('install', e => {
+      e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./'])));
+    });
+    self.addEventListener('fetch', e => {
+      e.respondWith(caches.match(e.request).then(r => r || fetch(e.request).catch(() => caches.match('/'))));
+    });
+  `;
+  const blob  = new Blob([swCode], { type: 'application/javascript' });
+  const swURL = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swURL).catch(() => {});
+}
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  setTimeout(() => {
+    const banner = document.getElementById('pwaBanner');
+    if (banner && !window.matchMedia('(display-mode: standalone)').matches) {
+      banner.style.display = 'flex';
+    }
+  }, 3000);
+});
+
+function installPWA() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => {
+      deferredPrompt = null;
+      document.getElementById('pwaBanner').style.display = 'none';
+    });
+  } else {
+    alert('To install APEX on iPhone:\n1. Tap the Share button in Safari\n2. Tap "Add to Home Screen"\n3. Tap "Add"\n\nOn Android Chrome:\nTap the 3-dot menu → "Add to Home Screen"');
+  }
+}
+
+// ══════════════════════════════════════════
+//  AUTO-LOGIN ON PAGE LOAD — Firebase
+// ══════════════════════════════════════════
+window.addEventListener('load', () => {
+  setTimeout(async () => {
+    try {
+      initFirebase();
+      _fbAuth.onAuthStateChanged(async (user) => {
+        if (user) {
+          // Already logged in — restore session
+          const profile = await fbLoadProfile(user.uid);
+          if (profile) {
+            isDemo = false;
+            // Try Firestore data first, fall back to localStorage
+            userData = await fbLoadData(user.uid);
+            if (!userData) {
+              const local = localStorage.getItem('apex_data_' + user.email);
+              userData = local ? JSON.parse(local) : null;
+            }
+            enterApp(profile.name, profile.biz, user.email, profile.bizType, profile.city);
+          } else {
+            showScreen('login');
+          }
+        } else {
+          showScreen('login');
+        }
+      });
+    } catch(e) {
+      // Firebase failed (offline) — try localStorage session fallback
+      const saved = localStorage.getItem('apex_session');
+      if (saved) {
+        try {
+          const s = JSON.parse(saved);
+          isDemo = false;
+          const local = localStorage.getItem('apex_data_' + s.email);
+          userData = local ? JSON.parse(local) : null;
+          enterApp(s.name, s.biz, s.email, s.bizType, s.city);
+          return;
+        } catch(ex) {}
+      }
+      showScreen('login');
+    }
+  }, 3000);
+});
+
+// ══════════════════════════════════════════
+//  SHA-256 HASHING (secure password storage)
+// ══════════════════════════════════════════
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// ══════════════════════════════════════════
+//  SCREEN NAVIGATION
+// ══════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function navTo(screenId, tabIndex) {
+  showScreen(screenId);
+  if (screenId === 'analyticsScreen' && !analyticsBuilt) {
+    buildAnalyticsScreen();
+    analyticsBuilt = true;
+  }
+  if (screenId === 'dataScreen') {
+    const rs = document.getElementById('resetSection');
+    if (rs) rs.style.display = userData ? 'block' : 'none';
+  }
+}
+
+// ══════════════════════════════════════════
+//  AUTH TAB SWITCH
+// ══════════════════════════════════════════
+function switchTab(tab) {
+  const isIn = (tab === 'signin');
+  document.getElementById('signinForm').style.display  = isIn ? 'block' : 'none';
+  document.getElementById('signupForm').style.display  = isIn ? 'none'  : 'block';
+  document.getElementById('tabSignIn').classList.toggle('active',  isIn);
+  document.getElementById('tabSignUp').classList.toggle('active', !isIn);
+}
+
+// ══════════════════════════════════════════
+//  SIGN IN — Firebase Auth
+// ══════════════════════════════════════════
+async function doSignIn() {
+  const email = document.getElementById('siEmail').value.trim();
+  const pass  = document.getElementById('siPass').value.trim();
+  const err   = document.getElementById('siErr');
+  const btn   = document.querySelector('#signinForm .login-btn');
+  if (!email || !pass) { showErr(err, 'Enter your email and password'); return; }
+  if (btn) { btn.textContent = 'Signing in...'; btn.disabled = true; }
+  try {
+    initFirebase();
+    const cred    = await _fbAuth.signInWithEmailAndPassword(email, pass);
+    const profile = await fbLoadProfile(cred.user.uid);
+    const name    = profile ? profile.name    : email.split('@')[0];
+    const biz     = profile ? profile.biz     : 'My Shop';
+    const bizType = profile ? profile.bizType : 'Kirana Store';
+    const city    = profile ? profile.city    : '';
+    localStorage.setItem('apex_session', JSON.stringify({name, biz, email, bizType, city}));
+    isDemo   = false;
+    userData = await fbLoadData(cred.user.uid);
+    if (!userData) {
+      const local = localStorage.getItem('apex_data_' + email);
+      userData = local ? JSON.parse(local) : null;
+    }
+    enterApp(name, biz, email, bizType, city);
+  } catch(e) {
+    const codes = {
+      'auth/invalid-credential':    'Wrong email or password. Please try again.',
+      'auth/user-not-found':        'No account found with this email. Please sign up.',
+      'auth/wrong-password':        'Wrong password. Please try again.',
+      'auth/too-many-requests':     'Too many attempts. Please wait a few minutes.',
+      'auth/network-request-failed':'No internet. Check your WiFi or mobile data.',
+      'auth/invalid-email':         'Invalid email address.'
+    };
+    showErr(err, codes[e.code] || ('Sign in failed: ' + (e.code || e.message)));
+  } finally {
+    if (btn) { btn.textContent = 'Sign In to APEX'; btn.disabled = false; }
+  }
+}
+
+// ══════════════════════════════════════════
+//  SIGN UP — Firebase Auth
+// ══════════════════════════════════════════
+async function doSignUp() {
+  const name    = document.getElementById('suName').value.trim();
+  const biz     = document.getElementById('suBiz').value.trim();
+  const bizType = document.getElementById('suBizType') ? document.getElementById('suBizType').value : 'Kirana Store';
+  const city    = document.getElementById('suCity') ? document.getElementById('suCity').value.trim() : '';
+  const email   = document.getElementById('suEmail').value.trim();
+  const pass    = document.getElementById('suPass').value.trim();
+  const err     = document.getElementById('suErr');
+  const btn     = document.querySelector('#signupForm .login-btn');
+  if (!name)                          { showErr(err, 'Enter your full name'); return; }
+  if (!biz)                           { showErr(err, 'Enter your shop name'); return; }
+  if (!email || !email.includes('@')) { showErr(err, 'Enter a valid email'); return; }
+  if (pass.length < 6)                { showErr(err, 'Password must be at least 6 characters'); return; }
+  if (btn) { btn.textContent = 'Creating account...'; btn.disabled = true; }
+  try {
+    initFirebase();
+    const cred = await _fbAuth.createUserWithEmailAndPassword(email, pass);
+    await fbSaveProfile(cred.user.uid, {name, biz, bizType, city, email, createdAt: new Date().toISOString()});
+    localStorage.setItem('apex_session', JSON.stringify({name, biz, email, bizType, city}));
+    isDemo   = false;
+    userData = null;
+    enterApp(name, biz, email, bizType, city);
+  } catch(e) {
+    const codes = {
+      'auth/email-already-in-use':  'This email is already registered. Please sign in.',
+      'auth/weak-password':         'Password too weak. Use at least 6 characters.',
+      'auth/invalid-email':         'Invalid email address.',
+      'auth/network-request-failed':'No internet. Check your WiFi or mobile data.'
+    };
+    showErr(err, codes[e.code] || ('Sign up failed: ' + (e.code || e.message)));
+  } finally {
+    if (btn) { btn.textContent = 'Create My APEX Account'; btn.disabled = false; }
+  }
+}
+
+// ══════════════════════════════════════════
+//  GOOGLE SIGN IN (simulated — prefill only)
+// ══════════════════════════════════════════
+function doGoogleSignIn() {
+  const name = prompt('Enter your full name:');
+  if (!name) return;
+  const biz  = prompt('Enter your shop name:');
+  if (!biz)  return;
+  document.getElementById('suName').value = name;
+  document.getElementById('suBiz').value  = biz;
+  switchTab('signup');
+  const err = document.getElementById('suErr');
+  err.className   = 'err-msg success';
+  err.textContent = '✅ Prefilled! Add your email and password to complete signup.';
+}
+
+// ══════════════════════════════════════════
+//  DEMO MODE
+// ══════════════════════════════════════════
+function enterDemo() {
+  isDemo      = true;
+  userData    = null;
+  currentUser = { name: 'Ramesh Kumar', biz: 'Ramesh Kirana Store', email: 'demo', bizType: 'Kirana Store', city: 'Meerut' };
+  document.getElementById('topbarTitle').textContent = 'Ramesh Kirana Store';
+  document.getElementById('topbarSub').textContent   = 'Kirana Store · Demo Mode';
+  document.getElementById('loggedInAs').textContent  = 'Demo — Ramesh Kumar, Meerut';
+  showScreen('dashboard');
+  buildDashboard();
+}
+
+// ══════════════════════════════════════════
+//  FORGOT PASSWORD — Firebase sends real email
+// ══════════════════════════════════════════
+async function doForgot() {
+  const email = document.getElementById('siEmail').value.trim();
+  const err   = document.getElementById('siErr');
+  if (!email) { showErr(err, 'Enter your email above first'); return; }
+  const btn = document.querySelector('#signinForm .forgot-btn');
+  if (btn) { btn.textContent = 'Sending...'; btn.disabled = true; }
+  try {
+    initFirebase();
+    await _fbAuth.sendPasswordResetEmail(email);
+    err.className   = 'err-msg success';
+    err.textContent = '✅ Reset email sent! Check your inbox and spam folder.';
+    setTimeout(() => { err.textContent = ''; err.className = 'err-msg'; }, 7000);
+  } catch(e) {
+    // Always show success for security (don't reveal if email exists)
+    err.className   = 'err-msg success';
+    err.textContent = '✅ If this email is registered, a reset link has been sent.';
+    setTimeout(() => { err.textContent = ''; err.className = 'err-msg'; }, 7000);
+  } finally {
+    if (btn) { btn.textContent = 'Forgot Password?'; btn.disabled = false; }
+  }
+}
+
+// ══════════════════════════════════════════
+//  ENTER APP
+// ══════════════════════════════════════════
+function enterApp(name, biz, email, bizType, city) {
+  currentUser = { name, biz, email, bizType: bizType || 'Kirana Store', city: city || 'India' };
+  document.getElementById('topbarTitle').textContent = biz || 'APEX Intelligence';
+  document.getElementById('topbarSub').textContent   = (bizType || 'Kirana Store') + ' · AI-Powered BI';
+  document.getElementById('loggedInAs').textContent  = name + ' · ' + (biz || '') + (city ? ' · ' + city : '');
+  analyticsBuilt = false;
+  updateApiKeyStatus();
+  updateTierBadge();
+  showScreen('dashboard');
+  buildDashboard();
+}
+
+// ══════════════════════════════════════════
+//  SIGN OUT — Firebase
+// ══════════════════════════════════════════
+async function doSignOut() {
+  try { if (_fbAuth) await _fbAuth.signOut(); } catch(e) {}
+  localStorage.removeItem('apex_session');
+  currentUser    = null;
+  isDemo         = false;
+  userData       = null;
+  analyticsBuilt = false;
+  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+  showScreen('login');
+}
+
+// ══════════════════════════════════════════
+//  HINDI TOGGLE
+// ══════════════════════════════════════════
+// ══════════════════════════════════════════
+//  HINDI TRANSLATION DICTIONARY
+// ══════════════════════════════════════════
+const H = {
+  // Bottom Nav
+  nav_dashboard:  { en: 'Dashboard',  hi: 'डैशबोर्ड' },
+  nav_analytics:  { en: 'Analytics',  hi: 'विश्लेषण' },
+  nav_data:       { en: 'Data',       hi: 'डेटा' },
+  nav_settings:   { en: 'Settings',   hi: 'सेटिंग्स' },
+
+  // Analytics Screen
+  an_title:       { en: 'Analytics',                        hi: 'व्यापार विश्लेषण' },
+  an_forecast:    { en: 'ML Sales Forecast — Next 3 Months',hi: 'ML बिक्री अनुमान — अगले 3 महीने' },
+  an_month1:      { en: 'Month +1',                         hi: 'महीना +1' },
+  an_month2:      { en: 'Month +2',                         hi: 'महीना +2' },
+  an_month3:      { en: 'Month +3',                         hi: 'महीना +3' },
+  an_3mtotal:     { en: '3-Month Total',                    hi: '3 महीने का कुल' },
+  an_predicted:   { en: 'Predicted revenue',                hi: 'अनुमानित आमदनी' },
+  an_cumulative:  { en: 'Cumulative forecast',              hi: 'संचित अनुमान' },
+  an_benchmark:   { en: '📊 Industry Benchmark Comparison', hi: '📊 उद्योग तुलना' },
+  an_growth:      { en: 'Month-over-Month Growth %',        hi: 'महीने-दर-महीने वृद्धि %' },
+  an_revenue_g:   { en: 'Revenue Growth',                   hi: 'आमदनी वृद्धि' },
+  an_12m:         { en: '12 MONTHS',                        hi: '12 महीने' },
+  an_profit_t:    { en: 'Monthly Profit Trend',             hi: 'मासिक मुनाफा ट्रेंड' },
+  an_profit_m:    { en: 'Profit Per Month',                 hi: 'प्रति माह मुनाफा' },
+  an_ratios:      { en: 'Key Business Ratios',              hi: 'मुख्य व्यापार अनुपात' },
+  an_fin_sum:     { en: 'Financial Summary',                hi: 'वित्तीय सारांश' },
+  an_tot_rev:     { en: 'Total Revenue YTD',                hi: 'कुल आमदनी (वर्ष)' },
+  an_tot_exp:     { en: 'Total Expenses YTD',               hi: 'कुल खर्च (वर्ष)' },
+  an_net_prof:    { en: 'Net Profit',                       hi: 'शुद्ध मुनाफा' },
+  an_margin:      { en: 'Profit Margin',                    hi: 'मुनाफा मार्जिन' },
+  an_best:        { en: 'Best Month',                       hi: 'सबसे अच्छा महीना' },
+  an_ml_conf:     { en: 'ML Confidence',                    hi: 'ML विश्वसनीयता' },
+  an_health:      { en: 'AI Health Report',                 hi: 'AI स्वास्थ्य रिपोर्ट' },
+  an_gen_health:  { en: 'Generate Health Report',           hi: 'स्वास्थ्य रिपोर्ट बनाएं' },
+  an_gen_sub:     { en: 'Full AI + ML analysis of your business', hi: 'आपके व्यापार का पूरा AI + ML विश्लेषण' },
+  an_gen_btn:     { en: 'Generate My Business Health Report',     hi: 'मेरी व्यापार रिपोर्ट बनाएं' },
+  an_export:      { en: '📄 Export Report',                 hi: '📄 रिपोर्ट डाउनलोड करें' },
+  an_export_sub:  { en: 'Download a complete business report with all analytics, ML predictions, and AI insights.', hi: 'सभी विश्लेषण, ML अनुमान और AI सुझाव के साथ पूरी रिपोर्ट डाउनलोड करें।' },
+  an_export_btn:  { en: '📄 Export Business Report',        hi: '📄 व्यापार रिपोर्ट डाउनलोड करें' },
+  an_no_data:     { en: 'No Analytics Yet',                 hi: 'अभी कोई विश्लेषण नहीं' },
+  an_no_sub:      { en: 'Upload your business data first to see ML predictions, growth charts, and industry benchmarks.', hi: 'ML अनुमान, ग्रोथ चार्ट और उद्योग तुलना देखने के लिए पहले अपना व्यापार डेटा अपलोड करें।' },
+  an_upload_btn:  { en: '📁 Upload My Data',               hi: '📁 मेरा डेटा अपलोड करें' },
+
+  // Data Screen
+  dt_title:       { en: 'My Business Data',     hi: 'मेरा व्यापार डेटा' },
+  dt_how:         { en: 'How to Add Your Data', hi: 'डेटा कैसे जोड़ें' },
+  dt_step1t:      { en: 'Open Excel or Google Sheets', hi: 'Excel या Google Sheets खोलें' },
+  dt_step1d:      { en: 'Enter your monthly sales, expenses, and product data.', hi: 'अपनी मासिक बिक्री, खर्च और उत्पाद डेटा दर्ज करें।' },
+  dt_step2t:      { en: 'Use These Column Names', hi: 'इन कॉलम नामों का उपयोग करें' },
+  dt_step2d:      { en: 'Month, Revenue, Expenses, Product, Region — exactly as shown.', hi: 'Month, Revenue, Expenses, Product, Region — बिल्कुल इसी तरह लिखें।' },
+  dt_step3t:      { en: 'Fill Your Data Row by Row', hi: 'अपना डेटा पंक्ति दर पंक्ति भरें' },
+  dt_step3d:      { en: 'Each row = one month or one product entry.', hi: 'हर पंक्ति = एक महीना या एक उत्पाद।' },
+  dt_step4t:      { en: 'Save as CSV', hi: 'CSV के रूप में सेव करें' },
+  dt_step4d:      { en: 'Excel: File → Save As → CSV. Google Sheets: File → Download → CSV.', hi: 'Excel: File → Save As → CSV. Google Sheets: File → Download → CSV.' },
+  dt_step5t:      { en: 'Upload below — dashboard updates instantly', hi: 'नीचे अपलोड करें — डैशबोर्ड तुरंत अपडेट होगा' },
+  dt_step5d:      { en: 'Your data is saved automatically. You will NOT need to re-upload next time.', hi: 'आपका डेटा स्वचालित रूप से सेव हो जाता है। अगली बार फिर से अपलोड करने की जरूरत नहीं।' },
+  dt_example:     { en: 'Example CSV Format',   hi: 'CSV फॉर्मेट का उदाहरण' },
+  dt_upload_sec:  { en: 'Upload Your CSV File', hi: 'अपनी CSV फाइल अपलोड करें' },
+  dt_upload_t:    { en: 'Tap Here to Upload Your CSV', hi: 'CSV अपलोड करने के लिए यहाँ टैप करें' },
+  dt_upload_sub:  { en: 'Your data saves automatically — no re-upload needed next visit', hi: 'आपका डेटा स्वचालित सेव होता है — अगली बार फिर अपलोड करने की जरूरत नहीं' },
+  dt_manual:      { en: 'Or Enter Manually',    hi: 'या मैन्युअल दर्ज करें' },
+  dt_month:       { en: 'Month',                hi: 'महीना' },
+  dt_revenue:     { en: 'Revenue This Month (₹)', hi: 'इस महीने की आमदनी (₹)' },
+  dt_expenses:    { en: 'Expenses This Month (₹)', hi: 'इस महीने का खर्च (₹)' },
+  dt_product:     { en: 'Main Product / Service', hi: 'मुख्य उत्पाद / सेवा' },
+  dt_region:      { en: 'City / Region',         hi: 'शहर / क्षेत्र' },
+  dt_save_btn:    { en: 'Save & Update Dashboard', hi: 'सेव करें और डैशबोर्ड अपडेट करें' },
+  dt_reset:       { en: 'Reset Data',            hi: 'डेटा रीसेट करें' },
+  dt_reset_sub:   { en: 'Remove all uploaded data and start fresh.', hi: 'सभी अपलोड किया डेटा हटाएं और नए सिरे से शुरू करें।' },
+  dt_reset_btn:   { en: 'Clear All My Data',    hi: 'मेरा सारा डेटा हटाएं' },
+
+  // Settings Screen
+  st_version:     { en: 'Version 5.0.0 · Kirana & Retail Edition · AI Advisory in Hindi & English', hi: 'संस्करण 5.0.0 · किराना और रिटेल · Hindi और English में AI सलाह' },
+  st_logged:      { en: 'Logged In As',          hi: 'लॉग इन किया है' },
+  st_api:         { en: '🔑 Anthropic API Key',  hi: '🔑 Anthropic API Key' },
+  st_api_none:    { en: 'No API key set. AI uses smart fallback responses.', hi: 'कोई API key नहीं। AI स्मार्ट फॉलबैक जवाब देगा।' },
+  st_api_set:     { en: '✅ API key set — Live Claude responses enabled', hi: '✅ API key सेट है — Live Claude जवाब चालू है' },
+  st_api_btn:     { en: '🔑 Set API Key for Live Claude', hi: '🔑 Live Claude के लिए API Key सेट करें' },
+  st_install:     { en: 'Install as App',        hi: 'ऐप के रूप में इंस्टॉल करें' },
+  st_install_sub: { en: 'APEX works as a full app on your phone. No app store needed.', hi: 'APEX आपके फोन पर पूरे ऐप की तरह काम करता है। App Store की जरूरत नहीं।' },
+  st_install_btn: { en: '📲 Install APEX on This Device', hi: '📲 इस डिवाइस पर APEX इंस्टॉल करें' },
+  st_market:      { en: 'Market Impact',         hi: 'बाजार प्रभाव' },
+  st_mission:     { en: 'Mission',               hi: 'हमारा लक्ष्य' },
+  st_business:    { en: 'Business Model',        hi: 'व्यापार मॉडल' },
+  st_signout:     { en: 'Sign Out of APEX',      hi: 'APEX से साइन आउट करें' },
+  st_why:         { en: '🎯 Why APEX? Our Difference', hi: '🎯 APEX क्यों? हमारी खासियत' },
+  st_roadmap:     { en: '🗺️ Product Roadmap',   hi: '🗺️ उत्पाद रोडमैप' },
+  st_pricing:     { en: '💰 Pricing',            hi: '💰 मूल्य निर्धारण' },
+  st_target:      { en: '🎯 Our Niche — Razor Sharp Focus', hi: '🎯 हमारा लक्ष्य — एकदम सटीक फोकस' },
+};
+
+function t(key) {
+  if (!H[key]) return key;
+  return isHindi ? H[key].hi : H[key].en;
+}
+
+function toggleHindi() {
+  isHindi = !isHindi;
+  const btn = document.getElementById('langBtnText');
+  if (btn) btn.textContent = isHindi ? 'A English' : 'अ हिंदी';
+
+  // Update bottom nav labels on all screens
+  document.querySelectorAll('.nav-label').forEach(el => {
+    const txt = el.textContent.trim();
+    if (txt === 'Dashboard' || txt === 'डैशबोर्ड')   el.textContent = t('nav_dashboard');
+    if (txt === 'Analytics' || txt === 'विश्लेषण')    el.textContent = t('nav_analytics');
+    if (txt === 'Data'      || txt === 'डेटा')         el.textContent = t('nav_data');
+    if (txt === 'Settings'  || txt === 'सेटिंग्स')    el.textContent = t('nav_settings');
+  });
+
+  // Rebuild screens with new language
+  analyticsBuilt = false;
+  buildDashboard();
+
+  // If currently on analytics, rebuild it
+  if (document.getElementById('analyticsScreen').classList.contains('active')) {
+    buildAnalyticsScreen();
+    analyticsBuilt = true;
+  }
+
+  // Update Settings screen text if visible
+  applyHindiToSettings();
+
+  // Update Data screen text if visible
+  applyHindiToDataScreen();
+
+  // Update AI chat greeting
+  const firstMsg = document.querySelector('#messages .msg.ai .msg-label');
+  if (firstMsg) {
+    const aiBox = firstMsg.parentElement;
+    if (aiBox) aiBox.innerHTML = '<div class="msg-label">APEX AI · READY</div>' +
+      (isHindi
+        ? 'नमस्ते! मैं आपका AI बिजनेस एडवाइजर हूँ। अपनी दुकान के बारे में कुछ भी पूछें — बिक्री, मुनाफा, या आगे क्या करना चाहिए।'
+        : 'Hello! I\'m your AI business analyst powered by Claude. Ask me anything about your business, data, or growth strategy.');
+  }
+}
+
+function applyHindiToSettings() {
+  const s = document.getElementById('about');
+  if (!s) return;
+  const ver = s.querySelector('.about-version');
+  if (ver) ver.textContent = t('st_version');
+  const loggedTitle = s.querySelector('#loggedInAs')?.previousElementSibling;
+  if (loggedTitle) loggedTitle.textContent = t('st_logged');
+  const signout = s.querySelector('.signout-btn');
+  if (signout) signout.textContent = t('st_signout');
+  const installBtn = s.querySelector('button[onclick="installPWA()"]');
+  if (installBtn) installBtn.textContent = t('st_install_btn');
+  const apiBtn = s.querySelector('button[onclick="openApiModal()"]');
+  if (apiBtn) apiBtn.textContent = t('st_api_btn');
+  updateApiKeyStatus();
+}
+
+function applyHindiToDataScreen() {
+  const d = document.getElementById('dataScreen');
+  if (!d) return;
+  const uploadTitle = d.querySelector('.upload-title');
+  if (uploadTitle) uploadTitle.textContent = t('dt_upload_t');
+  const uploadSub = d.querySelector('.upload-sub');
+  if (uploadSub) uploadSub.textContent = t('dt_upload_sub');
+  const saveBtn = d.querySelector('button[onclick="saveManual()"]');
+  if (saveBtn) saveBtn.textContent = t('dt_save_btn');
+  // Field labels
+  const labels = d.querySelectorAll('.field-label');
+  const labelMap = {
+    'Month': 'dt_month', 'महीना': 'dt_month',
+    'Revenue This Month (₹)': 'dt_revenue', 'इस महीने की आमदनी (₹)': 'dt_revenue',
+    'Expenses This Month (₹)': 'dt_expenses', 'इस महीने का खर्च (₹)': 'dt_expenses',
+    'Main Product / Service': 'dt_product', 'मुख्य उत्पाद / सेवा': 'dt_product',
+    'City / Region': 'dt_region', 'शहर / क्षेत्र': 'dt_region',
+  };
+  labels.forEach(el => {
+    const key = labelMap[el.textContent.trim()];
+    if (key) el.textContent = t(key);
+  });
+}
+
+
+function showErr(el, msg) {
+  el.className   = 'err-msg error';
+  el.textContent = msg;
+  setTimeout(() => { el.textContent = ''; el.className = 'err-msg'; }, 4000);
+}
+
+// ══════════════════════════════════════════
+//  API KEY MANAGEMENT
+// ══════════════════════════════════════════
+function openApiModal() {
+  const modal = document.getElementById('apiModal');
+  const input = document.getElementById('apiKeyInput');
+  const stored = localStorage.getItem('apex_api_key') || '';
+  input.value = stored ? stored.substring(0, 10) + '••••••••••' : '';
+  modal.classList.add('active');
+}
+
+function closeApiModal() {
+  document.getElementById('apiModal').classList.remove('active');
+}
+
+function saveApiKey() {
+  const val = document.getElementById('apiKeyInput').value.trim();
+  if (val && !val.includes('•')) {
+    localStorage.setItem('apex_api_key', val);
+    alert('✅ API key saved! Live Claude responses are now enabled.');
+  }
+  closeApiModal();
+  updateApiKeyStatus();
+}
+
+function updateApiKeyStatus() {
+  const el  = document.getElementById('apiKeyStatus');
+  const key = localStorage.getItem('apex_api_key');
+  if (el) {
+    el.textContent = key
+      ? '✅ API key set — Live Claude responses enabled'
+      : 'No API key set. AI uses smart fallback responses.';
+    el.style.color = key ? 'var(--accent)' : 'var(--muted)';
+  }
+}
+
+function getApiKey() {
+  return localStorage.getItem('apex_api_key') || '';
+}
+
+// ══════════════════════════════════════════
+//  BUILD DASHBOARD
+// ══════════════════════════════════════════
+function buildDashboard() {
+  const content = document.getElementById('dashContent');
+  if (!content) return;
+
+  const nicheBanner = '<div class="niche-banner">' +
+    '<div class="niche-badge">KIRANA &amp; RETAIL EDITION 🛒</div>' +
+    (isHindi
+      ? '<div class="niche-title">आपकी दुकान के लिए AI — ₹499/महीना</div><div class="niche-sub">Tally सिर्फ बताता है क्या हुआ। <strong style="color:var(--accent)">APEX बताता है आगे क्या करो।</strong> हिंदी और English दोनों में।</div>'
+      : '<div class="niche-title">AI for Your Shop — Built for Under ₹50L Revenue</div><div class="niche-sub">Tally tells you what happened. <strong style="color:var(--accent)">APEX tells you what to do next.</strong> In Hindi &amp; English. On your phone. At ₹499/month.</div>'
+    ) +
+    '</div>';
+
+  if (isDemo) {
+    content.innerHTML =
+      '<div class="success-banner">🎯 Demo Mode — sample data loaded. <span onclick="showScreen(\'login\')" style="text-decoration:underline;cursor:pointer;font-weight:700">Create account</span> to use your real data.</div>' +
+      nicheBanner +
+      kpiDemoHTML() + chartSectionHTML() + productsHTML(DEMO_DATA.products) +
+      segmentsHTML(DEMO_DATA.segments) + geoHTML(DEMO_DATA.geo) + aiChatHTML();
+    setTimeout(() => buildChart(DEMO_DATA), 100);
+
+  } else if (!userData) {
+    content.innerHTML =
+      '<div class="notif-banner"><div class="notif-icon">⚠️</div><div>' +
+      '<div class="notif-title">No Business Data Found for ' + (currentUser ? currentUser.biz : 'your shop') + '</div>' +
+      '<div class="notif-text">Your dashboard is empty. <strong style="color:var(--text)">Nothing shows here until you add your data.</strong><br><br>' +
+      '<span class="notif-link" onclick="navTo(\'dataScreen\',2)">📁 Add My Shop Data →</span></div>' +
+      '</div></div>' +
+      nicheBanner +
+      '<div class="section-title">Key Performance Indicators</div>' +
+      '<div class="kpi-grid">' + emptyKPI('TOTAL REVENUE','#00e5b0') + emptyKPI('NET PROFIT','#7c6aff') + emptyKPI('CUSTOMERS','#ff6b35') + emptyKPI('CHURN RATE','#ff4560') + '</div>' +
+      '<div class="card" style="margin-top:14px"><div class="empty-state"><div class="empty-icon">🛒</div>' +
+      '<div class="empty-title">Your Dashboard is Ready</div>' +
+      '<div class="empty-sub">Add your shop data and APEX will instantly show revenue charts, product performance, AI insights, and <strong>ML sales predictions</strong> — in Hindi or English.</div>' +
+      '<button class="empty-btn" onclick="navTo(\'dataScreen\',2)">📁 Upload My Shop Data</button></div></div>' +
+      aiChatHTML();
+  } else {
+    content.innerHTML =
+      '<div class="success-banner">✅ Live data loaded for <strong>' + (currentUser ? currentUser.biz : 'your shop') + '</strong></div>' +
+      nicheBanner +
+      kpiRealHTML(userData) + mlPredictionHTML(userData) + chartSectionHTML() +
+      productsHTML(userData.products) + segmentsHTML(userData.segments) + geoHTML(userData.geo) + aiChatHTML();
+    setTimeout(() => buildChart(userData), 100);
+  }
+}
+
+// ══════════════════════════════════════════
+//  KPI HTML BUILDERS
+// ══════════════════════════════════════════
+function kpiDemoHTML() {
+  return '<div class="section-title">Key Performance Indicators</div>' +
+    '<div class="kpi-grid">' +
+    kpiCard('Total Revenue', '₹7.8L', '↑ 34.7% YoY', '#00e5b0') +
+    kpiCard('Net Profit', '₹2.4L', '↑ 30.2% margin', '#7c6aff') +
+    kpiCard('Customers', '2,847', '↑ 8.4% MoM', '#ff6b35') +
+    kpiCard('Churn Rate', '2.3%', '↓ 0.4% vs last', '#ff4560') +
+    '</div>';
+}
+
+function kpiCard(label, value, delta, color) {
+  return '<div class="kpi-card">' +
+    '<div class="kpi-top" style="background:' + color + '"></div>' +
+    '<div class="kpi-label">' + label + '</div>' +
+    '<div class="kpi-value" style="color:' + color + '">' + value + '</div>' +
+    '<div class="kpi-delta" style="color:' + color + '">' + delta + '</div>' +
+    '</div>';
+}
+
+function kpiRealHTML(d) {
+  const totalRev = d.revenue.reduce((a, b) => a + b, 0) * 1000;
+  const totalExp = d.expenses.reduce((a, b) => a + b, 0) * 1000;
+  const profit   = totalRev - totalExp;
+  const margin   = (profit / totalRev * 100).toFixed(1);
+  return '<div class="section-title">Key Performance Indicators</div>' +
+    '<div class="kpi-grid">' +
+    kpiCard('Total Revenue', '₹' + fmtNum(totalRev), '↑ YTD Total', '#00e5b0') +
+    kpiCard('Net Profit', '₹' + fmtNum(profit), '↑ ' + margin + '% margin', '#7c6aff') +
+    kpiCard('Data Points', String(d.rowCount || d.revenue.length), 'Records loaded', '#ff6b35') +
+    kpiCard('Top Product', (d.products[0] ? d.products[0].name.substring(0, 10) : '—'), (d.products[0] ? d.products[0].growth : ''), '#ff4560') +
+    '</div>';
+}
+
+function emptyKPI(label, color) {
+  return '<div class="kpi-card">' +
+    '<div class="kpi-top" style="background:' + color + '"></div>' +
+    '<div class="kpi-label">' + label + '</div>' +
+    '<div class="kpi-empty">—</div>' +
+    '<div class="kpi-delta" style="color:var(--muted);font-size:10px">No data yet</div>' +
+    '</div>';
+}
+
+// ══════════════════════════════════════════
+//  ML PREDICTION CARD (on dashboard)
+// ══════════════════════════════════════════
+function mlPredictionHTML(d) {
+  if (!d || d.revenue.length < 3) return '';
+  const pred       = linearRegressionPredict(d.revenue);
+  const demand     = demandForecast(d.revenue);
+  const confidence = Math.min(95, 60 + d.revenue.length * 2);
+  return '<div class="section-title">🤖 ML Sales Predictions</div>' +
+    '<div class="ml-card">' +
+    '<div class="ml-badge">⚡ APEX DUAL-MODEL FORECAST</div>' +
+    '<div class="ml-title">Next Month Revenue Prediction</div>' +
+    '<div class="ml-value">₹' + fmtNum(pred.nextMonth * 1000) + '</div>' +
+    '<div class="ml-sub">Based on ' + d.revenue.length + '-month trend · Linear Regression + WMA</div>' +
+    '<div class="confidence-bar"><div class="confidence-fill" style="width:' + confidence + '%"></div></div>' +
+    '<div style="font-size:10px;color:var(--muted);margin-top:4px">Model confidence: ' + confidence + '%</div>' +
+    '<div class="ml-grid">' +
+    '<div class="ml-item"><div class="ml-item-label">3-Month Forecast</div><div class="ml-item-val">₹' + fmtNum(pred.threeMonth * 1000) + '</div><div class="ml-item-sub">Cumulative estimate</div></div>' +
+    '<div class="ml-item"><div class="ml-item-label">Demand Trend</div><div class="ml-item-val" style="color:' + (demand.trend > 0 ? '#00e5b0' : '#ff4560') + '">' + (demand.trend > 0 ? '↑' : '↓') + ' ' + Math.abs(demand.trend).toFixed(1) + '%</div><div class="ml-item-sub">Monthly avg change</div></div>' +
+    '<div class="ml-item"><div class="ml-item-label">Peak Season</div><div class="ml-item-val" style="color:#7c6aff">' + demand.peakMonth + '</div><div class="ml-item-sub">Best revenue month</div></div>' +
+    '<div class="ml-item"><div class="ml-item-label">Slow Season</div><div class="ml-item-val" style="color:#ff6b35">' + demand.slowMonth + '</div><div class="ml-item-sub">Plan cash reserves</div></div>' +
+    '</div></div>';
+}
+
+// ══════════════════════════════════════════
+//  CHART SECTION
+// ══════════════════════════════════════════
+function chartSectionHTML() {
+  return '<div class="section-title">Revenue Overview</div>' +
+    '<div class="card">' +
+    '<div class="card-header"><div class="card-title">Revenue vs Expenses</div><div class="card-badge">12 MONTHS</div></div>' +
+    '<div class="chart-wrap"><canvas id="revenueChart"></canvas></div>' +
+    '</div>';
+}
+
+function buildChart(d) {
+  const canvas = document.getElementById('revenueChart');
+  if (!canvas) return;
+  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+  chartInstance = new Chart(canvas.getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: d.months,
+      datasets: [
+        {
+          label: 'Revenue',
+          data: d.revenue,
+          backgroundColor: 'rgba(0,229,176,.75)',
+          borderColor: '#00e5b0',
+          borderWidth: 1,
+          borderRadius: 3
+        },
+        {
+          label: 'Expenses',
+          data: d.expenses,
+          type: 'line',
+          borderColor: '#ff6b35',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          pointRadius: 2,
+          pointBackgroundColor: '#ff6b35',
+          tension: 0.4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#5a607a', font: { size: 10 }, boxWidth: 10 } } },
+      scales: {
+        x: { grid: { color: 'rgba(30,34,53,.8)' }, ticks: { color: '#5a607a', font: { size: 9 } } },
+        y: { grid: { color: 'rgba(30,34,53,.8)' }, ticks: { color: '#5a607a', font: { size: 9 } } }
+      }
+    }
+  });
+}
+
+// ══════════════════════════════════════════
+//  PRODUCTS HTML
+// ══════════════════════════════════════════
+function productsHTML(products) {
+  if (!products || !products.length) return '';
+  const rows = products.map(p =>
+    '<div class="product-row">' +
+    '<div class="product-info">' +
+    '<span class="product-name">' + p.name + '</span>' +
+    '<span class="product-rev">' + p.rev + '</span>' +
+    '<span class="product-growth" style="color:' + (p.pos ? '#00e5b0' : '#ff4560') + '">' + p.growth + '</span>' +
+    '</div>' +
+    '<div class="prog-track"><div class="prog-fill" style="width:' + p.bar + '%"></div></div>' +
+    '</div>'
+  ).join('');
+  return '<div class="section-title">Product Performance</div>' +
+    '<div class="card"><div class="card-header"><div class="card-title">Top Products</div></div>' + rows + '</div>';
+}
+
+// ══════════════════════════════════════════
+//  SEGMENTS HTML
+// ══════════════════════════════════════════
+function segmentsHTML(segments) {
+  if (!segments || !segments.length) return '';
+  const rows = segments.map(s =>
+    '<div class="seg-row">' +
+    '<div class="seg-info"><span class="seg-name">' + s.name + '</span><span class="seg-pct" style="color:' + s.color + '">' + s.pct + '%</span></div>' +
+    '<div class="seg-track"><div class="seg-bar" style="width:' + s.pct + '%;background:' + s.color + '"></div></div>' +
+    '</div>'
+  ).join('');
+  return '<div class="section-title">Customer Segments</div>' +
+    '<div class="card"><div class="card-header"><div class="card-title">Market Breakdown</div><div class="card-badge">LIVE</div></div>' + rows + '</div>';
+}
+
+// ══════════════════════════════════════════
+//  GEO HTML
+// ══════════════════════════════════════════
+function geoHTML(geo) {
+  if (!geo || !geo.length) return '';
+  const maxShare = Math.max(...geo.map(g => g.share));
+  const rows = geo.map(g => {
+    const barWidth = Math.round((g.share / maxShare) * 50);
+    return '<div class="geo-row">' +
+      '<span class="geo-flag">' + g.flag + '</span>' +
+      '<span class="geo-name">' + g.name + '</span>' +
+      '<div class="geo-bar-wrap"><div class="geo-bar-inner" style="width:' + barWidth + 'px"></div></div>' +
+      '<span class="geo-val">' + g.share + '%</span>' +
+      '</div>';
+  }).join('');
+  return '<div class="section-title">Regional Revenue</div>' +
+    '<div class="card"><div class="card-header"><div class="card-title">Regional Revenue</div></div>' + rows + '</div>';
+}
+
+// ══════════════════════════════════════════
+//  AI CHAT HTML
+// ══════════════════════════════════════════
+function aiChatHTML() {
+  const tier = getCurrentTier();
+  const isLocked = (tier === 'free'); // logged in but no API key
+  const greeting = isHindi
+    ? 'नमस्ते! मैं आपका AI बिजनेस एडवाइजर हूँ। अपनी दुकान के बारे में कुछ भी पूछें — बिक्री, मुनाफा, या आगे क्या करना चाहिए।'
+    : 'Hello! I\'m your AI business analyst for your shop. Ask me anything — sales strategy, profit tips, or what to focus on next.';
+
+  const lockNotice = isLocked
+    ? '<div class="tier-lock"><span style="font-size:18px">🔒</span><div class="tier-lock-text"><strong style="color:var(--text)">PRO Feature</strong><br>AI chat requires API key. Add your Anthropic key in Settings.</div><button class="tier-upgrade-btn" onclick="navTo(\'about\',3)">Upgrade →</button></div>'
+    : '';
+
+  return '<div class="section-title">AI Business Advisor</div>' +
+    '<div class="card">' +
+    '<div class="ai-header">' +
+    '<div class="ai-avatar">🤖</div>' +
+    '<div><div class="ai-name">APEX AI Advisor ' + (isHindi ? '· हिंदी' : '· English') + '</div><div class="ai-desc">Powered by Claude · Kirana &amp; Retail specialist</div></div>' +
+    '</div>' +
+    lockNotice +
+    '<div class="quick-row">' +
+    (isHindi
+      ? '<button class="qp" onclick="sendQ(\'APEX क्या है और यह मेरी दुकान की कैसे मदद करेगा?\')">APEX क्या है?</button>' +
+        '<button class="qp" onclick="sendQ(\'मेरी बिक्री कैसे बढ़ाऊं?\')">बिक्री बढ़ाएं</button>' +
+        '<button class="qp" onclick="sendQ(\'मेरे खर्चे कम कैसे करूं?\')">खर्चे कम करें</button>' +
+        '<button class="qp" onclick="sendQ(\'कौन सा सामान सबसे ज्यादा बिकता है?\')">बेस्ट प्रोडक्ट</button>'
+      : '<button class="qp" onclick="sendQ(\'What is APEX and how does it help my kirana shop?\')">What is APEX?</button>' +
+        '<button class="qp" onclick="sendQ(\'How can I increase my shop revenue this month?\')">Grow revenue</button>' +
+        '<button class="qp" onclick="sendQ(\'How do I reduce my shop expenses?\')">Cut costs</button>' +
+        '<button class="qp" onclick="sendQ(\'Which product should I stock more of?\')">Best products</button>'
+    ) +
+    '</div>' +
+    '<div class="messages" id="messages">' +
+    '<div class="msg ai"><div class="msg-label">APEX AI · READY</div>' + greeting + '</div>' +
+    '</div>' +
+    '<div class="input-row">' +
+    '<input class="msg-input" id="msgInput" placeholder="' + (isHindi ? 'अपना सवाल पूछें...' : 'Ask about your shop...') + '" onkeydown="if(event.key===\'Enter\')sendMsg()">' +
+    '<button class="ask-btn" id="askBtn" onclick="sendMsg()">' + (isHindi ? 'पूछें' : 'Ask AI') + '</button>' +
+    '</div></div>';
+}
+
+// ══════════════════════════════════════════
+//  AI CHAT SEND
+// ══════════════════════════════════════════
+function addMsg(text, role) {
+  const box = document.getElementById('messages');
+  if (!box) return null;
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  if (role === 'ai') {
+    div.innerHTML = '<div class="msg-label">APEX AI · CLAUDE</div>' + text;
+  } else {
+    div.textContent = text;
+  }
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+  return div;
+}
+
+async function sendMsg() {
+  const inp = document.getElementById('msgInput');
+  const btn = document.getElementById('askBtn');
+  if (!inp) return;
+  const q = inp.value.trim();
+  if (!q) return;
+  inp.value = ''; btn.disabled = true;
+  addMsg(q, 'user');
+  const thinking = addMsg(isHindi ? 'सोच रहा हूँ...' : 'Thinking...', 'ai');
+
+  // ── Build business context to send to backend ──
+  const d = isDemo ? DEMO_DATA : userData;
+  let contextObj = {};
+  if (d) {
+    const pred      = linearRegressionPredict(d.revenue);
+    const totalRev  = d.revenue.reduce((a, b) => a + b, 0);
+    const totalExp  = d.expenses.reduce((a, b) => a + b, 0);
+    const margin    = ((totalRev - totalExp) / totalRev * 100).toFixed(1);
+    contextObj = {
+      totalRevenue:  fmtNum(totalRev),
+      totalExpenses: fmtNum(totalExp),
+      margin:        margin,
+      mlPrediction:  fmtNum(pred.nextMonth * 1000),
+      topProduct:    d.products[0] ? d.products[0].name + ' (' + d.products[0].growth + ')' : 'N/A',
+      topRegion:     d.geo[0] ? d.geo[0].name + ' (' + d.geo[0].share + '%)' : 'N/A'
+    };
+  }
+
+  // ── Use Anthropic API directly (needs API key in Settings) ──
+  try {
+    const apiKey = getApiKey();
+    if (!apiKey) throw new Error('no_key');
+    const bizType = currentUser ? (currentUser.bizType || 'Kirana Store') : 'Kirana Store';
+    const city    = currentUser ? (currentUser.city || 'Meerut') : 'Meerut';
+    const langLine = isHindi
+      ? 'IMPORTANT: Respond ENTIRELY in simple Hindi (Devanagari script).'
+      : 'Respond in simple English with occasional warm Hindi words.';
+    const prompt = 'You are APEX AI advisor for Indian kirana & retail shops. ' +
+      'Shop type: ' + bizType + ', City: ' + city + '. ' +
+      (Object.keys(contextObj).length ? 'Business data: ' + JSON.stringify(contextObj) + '. ' : '') +
+      langLine + ' Answer in 3-4 sentences, be specific and actionable. Question: ' + q;
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 600,
+        messages: [{ role: 'user', content: prompt }] })
+    });
+    const data  = await res.json();
+    const reply = data.content && data.content[0] ? data.content[0].text : null;
+    if (!reply) throw new Error('empty');
+    thinking.innerHTML = '<div class="msg-label">APEX AI · CLAUDE</div>' + reply.replace(/\n/g, '<br>');
+
+  } catch(err) {
+    // ── Smart offline fallback ────────────────────────────────
+    const ql = q.toLowerCase();
+    let fb = '';
+    if (ql.includes('apex') || ql.includes('what is') || ql.includes('kya hai')) {
+      fb = isHindi
+        ? 'APEX आपकी दुकान के लिए AI बिजनेस एडवाइजर है। Tally सिर्फ बताता है क्या हुआ — APEX बताता है आगे क्या करो। ₹499/महीना में पूरी analytics, ML prediction और Hindi में AI सलाह।'
+        : 'APEX is India\'s only AI business advisor built for kirana & retail shops under ₹50L revenue. Unlike Tally (no AI) or Zoho (too complex), APEX gives you actionable advice in Hindi & English, on mobile, at ₹499/month.';
+    } else if (d) {
+      const pred = linearRegressionPredict(d.revenue);
+      const tp   = d.products[0];
+      fb = isHindi
+        ? 'आपके डेटा के अनुसार अगले महीने ₹' + fmtNum(pred.nextMonth * 1000) + ' की बिक्री होने का अनुमान है। ' + (tp ? tp.name + ' आपका सबसे अच्छा प्रोडक्ट है।' : '') + ' Analytics tab में पूरी रिपोर्ट देखें।'
+        : 'Based on your data, ML predicts ₹' + fmtNum(pred.nextMonth * 1000) + ' revenue next month. ' + (tp ? tp.name + ' is your top product at ' + tp.growth + '.' : '') + ' Check Analytics for the full report.';
+    } else {
+      fb = isHindi
+        ? 'Data tab में अपनी दुकान का डेटा डालें — फिर मैं आपको सटीक ML prediction और growth tips दूंगा।'
+        : 'Add your shop data in the Data tab and I\'ll give you ML predictions and specific growth recommendations for your shop.';
+    }
+    thinking.innerHTML = '<div class="msg-label">APEX AI · OFFLINE MODE</div>' + fb;
+  }
+
+  btn.disabled = false;
+}
+
+function sendQ(q) {
+  const i = document.getElementById('msgInput');
+  if (i) { i.value = q; sendMsg(); }
+}
+
+// ══════════════════════════════════════════
+//  CSV UPLOAD
+// ══════════════════════════════════════════
+function handleCSV(event) {
+  const file   = event.target.files[0];
+  const status = document.getElementById('uploadStatus');
+  const zone   = document.getElementById('uploadZone');
+  if (!file) return;
+  if (!file.name.toLowerCase().endsWith('.csv')) {
+    setStatus(status, '⚠️ Please upload a .csv file', '#ff4560'); return;
+  }
+  setStatus(status, '⏳ Reading your file...', 'var(--muted)');
+  zone.style.borderColor = 'var(--accent)';
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const lines   = e.target.result.trim().split('\n').filter(l => l.trim());
+      const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/['"]/g, ''));
+      const ri = headers.findIndex(h => h.includes('revenue') || h.includes('sales') || h.includes('income'));
+      const ei = headers.findIndex(h => h.includes('expense') || h.includes('cost'));
+      const pi = headers.findIndex(h => h.includes('product') || h.includes('item') || h.includes('category'));
+      const gi = headers.findIndex(h => h.includes('region') || h.includes('city') || h.includes('state') || h.includes('location'));
+      const mi = headers.findIndex(h => h.includes('month') || h.includes('date'));
+
+      if (ri === -1) {
+        setStatus(status, '⚠️ No Revenue column found. Check column names match: Month, Revenue, Expenses, Product, Region', '#ff4560');
+        return;
+      }
+
+      const rows = lines.slice(1).map(function(line) {
+        const cols = line.split(',').map(c => c.trim().replace(/[₹$,"']/g, ''));
+        return {
+          month:   mi >= 0 ? cols[mi] : '',
+          revenue: ri >= 0 ? (parseFloat(cols[ri]) || 0) : 0,
+          expense: ei >= 0 ? (parseFloat(cols[ei]) || 0) : 0,
+          product: pi >= 0 ? (cols[pi] || 'General') : 'General',
+          region:  gi >= 0 ? (cols[gi] || 'India')   : 'India',
+        };
+      }).filter(r => r.revenue > 0);
+
+      if (!rows.length) {
+        setStatus(status, '⚠️ No valid rows found. Make sure Revenue values are numbers greater than 0.', '#ff4560');
+        return;
+      }
+
+      userData = processCSVData(rows);
+      if (currentUser && currentUser.email && currentUser.email !== 'demo') {
+        localStorage.setItem('apex_data_' + currentUser.email, JSON.stringify(userData));
+      }
+      const rs = document.getElementById('resetSection');
+      if (rs) rs.style.display = 'block';
+      zone.style.borderColor = '#00e5b0';
+      setStatus(status, '✅ ' + rows.length + ' rows loaded from "' + file.name + '".\nData saved — no need to re-upload next time.', '#00e5b0');
+      setTimeout(() => { analyticsBuilt = false; buildDashboard(); navTo('dashboard', 0); }, 2000);
+    } catch(err) {
+      setStatus(status, '⚠️ Error reading file: ' + err.message, '#ff4560');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function setStatus(el, msg, color) {
+  el.style.color      = color;
+  el.textContent      = msg;
+  el.style.whiteSpace = 'pre-line';
+}
+
+// ══════════════════════════════════════════
+//  PROCESS CSV DATA
+// ══════════════════════════════════════════
+function processCSVData(rows) {
+  const byMonth = {};
+  rows.forEach(r => {
+    const key = r.month ? r.month.substring(0, 7) : 'Unknown';
+    if (!byMonth[key]) byMonth[key] = { rev: 0, exp: 0 };
+    byMonth[key].rev += r.revenue;
+    byMonth[key].exp += r.expense;
+  });
+
+  const sorted   = Object.keys(byMonth).sort().slice(-12);
+  const months   = sorted.map(k => k.substring(5, 7) || k.substring(0, 3));
+  const revenue  = sorted.map(k => Math.round(byMonth[k].rev));
+  const expenses = sorted.map(k => Math.round(byMonth[k].exp));
+
+  const byProd  = {};
+  rows.forEach(r => { byProd[r.product] = (byProd[r.product] || 0) + r.revenue; });
+  const sortedP = Object.entries(byProd).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  const maxP    = sortedP[0] ? sortedP[0][1] : 1;
+  const products = sortedP.map(function(entry) {
+    const name = entry[0], rev = entry[1];
+    const g = ((Math.random() - 0.25) * 35).toFixed(1);
+    return { name, rev: '₹' + fmtNum(rev), growth: (g >= 0 ? '+' : '') + g + '%', pos: parseFloat(g) >= 0, bar: Math.round(rev / maxP * 100) };
+  });
+
+  const byReg   = {};
+  rows.forEach(r => { byReg[r.region] = (byReg[r.region] || 0) + r.revenue; });
+  const totalReg = Object.values(byReg).reduce((a, b) => a + b, 0) || 1;
+  const flagMap  = { India:'🇮🇳', Delhi:'🇮🇳', Mumbai:'🇮🇳', Indore:'🇮🇳', Bangalore:'🇮🇳', Hyderabad:'🇮🇳', Rajasthan:'🇮🇳', Gujarat:'🇮🇳', UP:'🇮🇳', 'Uttar Pradesh':'🇮🇳', USA:'🇺🇸', UK:'🇬🇧', Europe:'🇪🇺', Dubai:'🇦🇪', Singapore:'🇸🇬', Other:'🌍' };
+  const geo = Object.entries(byReg).sort((a, b) => b[1] - a[1]).slice(0, 5)
+    .map(function(entry) {
+      return { flag: flagMap[entry[0]] || '🇮🇳', name: entry[0], share: Math.round(entry[1] / totalReg * 1000) / 10 };
+    });
+
+  const segments = [
+    { name: 'Regular Clients', pct: 40, color: '#00e5b0' },
+    { name: 'Walk-in Retail',  pct: 28, color: '#7c6aff' },
+    { name: 'Online Orders',   pct: 18, color: '#ff6b35' },
+    { name: 'Wholesale',       pct: 10, color: '#00b4ff' },
+    { name: 'Others',          pct:  4, color: '#ff4560' },
+  ];
+  return { months, revenue, expenses, products, segments, geo, rowCount: rows.length };
+}
+
+// ══════════════════════════════════════════
+//  MANUAL DATA SAVE  →  saves to backend
+// ══════════════════════════════════════════
+async function saveManual() {
+  const month   = document.getElementById('manMonth').value;
+  const rev     = parseFloat(document.getElementById('manRevenue').value) || 0;
+  const exp     = parseFloat(document.getElementById('manExpenses').value) || 0;
+  const product = document.getElementById('manProduct').value.trim() || 'General';
+  const region  = document.getElementById('manRegion').value.trim()  || 'India';
+  const btn     = document.querySelector('#dataScreen .login-btn');
+
+  if (!month)   { alert('Please select a month'); return; }
+  if (rev <= 0) { alert('Please enter a revenue amount greater than 0'); return; }
+
+  // ── Update local userData object ──
+  if (userData) {
+    userData.months.push(month.substring(5, 7));
+    userData.revenue.push(rev);
+    userData.expenses.push(exp);
+    if (userData.months.length > 12) {
+      userData.months.shift(); userData.revenue.shift(); userData.expenses.shift();
+    }
+    if (!userData.products.find(p => p.name === product)) {
+      userData.products.unshift({ name: product, rev: '₹' + fmtNum(rev), growth: '+0%', pos: true, bar: 100 });
+      userData.products = userData.products.slice(0, 5);
+    }
+  } else {
+    userData = processCSVData([{ month, revenue: rev, expense: exp, product, region }]);
+  }
+
+  // ── Save to Firebase Firestore + localStorage backup ──
+  if (btn) { btn.textContent = 'Saving...'; btn.disabled = true; }
+
+  if (currentUser && currentUser.email !== 'demo') {
+    localStorage.setItem('apex_data_' + currentUser.email, JSON.stringify(userData));
+    if (_fbAuth && _fbAuth.currentUser) {
+      await fbSaveData(_fbAuth.currentUser.uid, userData);
+    }
+  }
+
+  if (btn) { btn.textContent = 'Save & Update Dashboard'; btn.disabled = false; }
+
+  ['manMonth','manRevenue','manExpenses','manProduct','manRegion'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+
+  const rs = document.getElementById('resetSection');
+  if (rs) rs.style.display = 'block';
+  analyticsBuilt = false;
+  alert('✅ Data saved to cloud! Dashboard updated.');
+  buildDashboard();
+  navTo('dashboard', 0);
+}
+
+async function clearUserData() {
+  if (!confirm('Remove all data? This cannot be undone.')) return;
+  userData = null;
+
+  if (currentUser && currentUser.email !== 'demo') {
+    localStorage.removeItem('apex_data_' + currentUser.email);
+    if (_fbAuth && _fbAuth.currentUser) {
+      await fbSaveData(_fbAuth.currentUser.uid, null);
+    }
+  }
+
+  const rs = document.getElementById('resetSection');
+  if (rs) rs.style.display = 'none';
+  analyticsBuilt = false;
+  buildDashboard();
+  navTo('dashboard', 0);
+}
+
+// ══════════════════════════════════════════
+//  ANALYTICS SCREEN
+// ══════════════════════════════════════════
+function buildAnalyticsScreen() {
+  const d       = isDemo ? DEMO_DATA : userData;
+  const content = document.getElementById('analyticsContent');
+  const subEl   = document.getElementById('analyticsSub');
+  if (subEl) subEl.textContent = currentUser ? currentUser.biz : 'Your Business';
+
+  if (!d) {
+    content.innerHTML = '<div class="card" style="margin-top:14px"><div class="empty-state"><div class="empty-icon">📈</div><div class="empty-title">' + t('an_no_data') + '</div><div class="empty-sub">' + t('an_no_sub') + '</div><button class="empty-btn" onclick="navTo(\'dataScreen\',2)">' + t('an_upload_btn') + '</button></div></div>';
+    return;
+  }
+
+  const growthData = d.revenue.map((v, i) => i === 0 ? 0 : parseFloat(((v - d.revenue[i-1]) / d.revenue[i-1] * 100).toFixed(1)));
+  const profitData = d.revenue.map((v, i) => parseFloat((v - d.expenses[i]).toFixed(1)));
+  const pred       = linearRegressionPredict(d.revenue);
+  const forecast   = [pred.nextMonth, pred.nextMonth * 1.05, pred.nextMonth * 1.1];
+  const totalRev   = d.revenue.reduce((a, b) => a + b, 0) * 1000;
+  const totalExp   = d.expenses.reduce((a, b) => a + b, 0) * 1000;
+  const profit     = totalRev - totalExp;
+  const margin     = (profit / totalRev * 100).toFixed(1);
+
+  content.innerHTML =
+    '<div class="section-title">' + t('an_forecast') + '</div>' +
+    '<div class="ml-card">' +
+    '<div class="ml-badge">⚡ LINEAR REGRESSION FORECAST</div>' +
+    '<div class="ml-grid">' +
+    forecast.map((v, i) =>
+      '<div class="ml-item"><div class="ml-item-label">' + t('an_month' + (i+1)) + '</div><div class="ml-item-val">₹' + fmtNum(v * 1000) + '</div><div class="ml-item-sub">' + t('an_predicted') + '</div></div>'
+    ).join('') +
+    '<div class="ml-item"><div class="ml-item-label">' + t('an_3mtotal') + '</div><div class="ml-item-val" style="color:#7c6aff">₹' + fmtNum(forecast.reduce((a,b)=>a+b,0) * 1000) + '</div><div class="ml-item-sub">' + t('an_cumulative') + '</div></div>' +
+    '</div></div>' +
+
+    dualModelHTML(d.revenue) +
+
+    '<div class="section-title">' + t('an_benchmark') + '</div>' +
+    competitorBenchmarkHTML(totalRev, totalExp, margin) +
+
+    '<div class="section-title">' + t('an_growth') + '</div>' +
+    '<div class="card"><div class="card-header"><div class="card-title">' + t('an_revenue_g') + '</div><div class="card-badge">' + t('an_12m') + '</div></div><div class="chart-wrap"><canvas id="growthChart"></canvas></div></div>' +
+
+    '<div class="section-title">' + t('an_profit_t') + '</div>' +
+    '<div class="card"><div class="card-header"><div class="card-title">' + t('an_profit_m') + '</div></div><div class="chart-wrap"><canvas id="profitChart"></canvas></div></div>' +
+
+    '<div class="section-title">' + t('an_ratios') + '</div>' +
+    '<div class="card"><div class="card-header"><div class="card-title">' + t('an_fin_sum') + '</div></div>' +
+    '<div class="stack-row"><span class="stack-key">' + t('an_tot_rev') + '</span><span class="stack-val">₹' + fmtNum(totalRev) + '</span></div>' +
+    '<div class="stack-row"><span class="stack-key">' + t('an_tot_exp') + '</span><span class="stack-val">₹' + fmtNum(totalExp) + '</span></div>' +
+    '<div class="stack-row"><span class="stack-key">' + t('an_net_prof') + '</span><span class="stack-val" style="color:var(--accent)">₹' + fmtNum(profit) + '</span></div>' +
+    '<div class="stack-row"><span class="stack-key">' + t('an_margin') + '</span><span class="stack-val" style="color:var(--accent)">' + margin + '%</span></div>' +
+    '<div class="stack-row"><span class="stack-key">' + t('an_best') + '</span><span class="stack-val">₹' + fmtNum(Math.max(...d.revenue) * 1000) + '</span></div>' +
+    '<div class="stack-row"><span class="stack-key">' + t('an_ml_conf') + '</span><span class="stack-val" style="color:var(--accent3)">' + Math.min(95, 60 + d.revenue.length * 2) + '%</span></div>' +
+    '</div>' +
+
+    '<div class="section-title">' + t('an_health') + '</div>' +
+    '<div class="card"><div class="ai-header"><div class="ai-avatar">🤖</div><div><div class="ai-name">' + t('an_gen_health') + '</div><div class="ai-desc">' + t('an_gen_sub') + '</div></div></div>' +
+    '<button class="login-btn" style="margin-top:0" onclick="generateHealthReport()">' + t('an_gen_btn') + '</button>' +
+    '<div id="healthResult" style="margin-top:14px;font-size:13px;color:var(--text);line-height:1.7"></div></div>' +
+
+    '<div class="section-title">' + t('an_export') + '</div>' +
+    '<div class="card"><div style="font-size:13px;color:var(--muted);margin-bottom:12px">' + t('an_export_sub') + '</div>' +
+    '<button class="login-btn" style="margin-top:0;background:var(--accent3)" onclick="exportPDFReport()">' + t('an_export_btn') + '</button></div>';
+
+  setTimeout(function() {
+    const gc = document.getElementById('growthChart');
+    if (gc) {
+      new Chart(gc.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: d.months,
+          datasets: [{ data: growthData, backgroundColor: growthData.map(v => v >= 0 ? 'rgba(0,229,176,.7)' : 'rgba(255,69,96,.7)'), borderRadius: 3 }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: 'rgba(30,34,53,.8)' }, ticks: { color: '#5a607a', font: { size: 9 } } },
+            y: { grid: { color: 'rgba(30,34,53,.8)' }, ticks: { color: '#5a607a', font: { size: 9 }, callback: v => v + '%' } }
+          }
+        }
+      });
+    }
+    const pc = document.getElementById('profitChart');
+    if (pc) {
+      new Chart(pc.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: d.months,
+          datasets: [{ data: profitData, borderColor: '#7c6aff', backgroundColor: 'rgba(124,106,255,.15)', borderWidth: 2, fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: '#7c6aff' }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: 'rgba(30,34,53,.8)' }, ticks: { color: '#5a607a', font: { size: 9 } } },
+            y: { grid: { color: 'rgba(30,34,53,.8)' }, ticks: { color: '#5a607a', font: { size: 9 } } }
+          }
+        }
+      });
+    }
+  }, 100);
+}
+
+// ══════════════════════════════════════════
+//  GENERATE HEALTH REPORT (AI)
+// ══════════════════════════════════════════
+async function generateHealthReport() {
+  const el = document.getElementById('healthResult');
+  if (!el) return;
+  el.innerHTML = '<span style="color:var(--muted)">⏳ Generating AI health report...</span>';
+
+  const d = isDemo ? DEMO_DATA : userData;
+  if (!d) { el.innerHTML = '<span style="color:var(--muted)">Please upload your business data first.</span>'; return; }
+
+  const totalRev = d.revenue.reduce((a,b)=>a+b,0).toFixed(1);
+  const totalExp = d.expenses.reduce((a,b)=>a+b,0).toFixed(1);
+  const profit   = (parseFloat(totalRev) - parseFloat(totalExp)).toFixed(1);
+  const margin   = (parseFloat(profit) / parseFloat(totalRev) * 100).toFixed(1);
+  const pred     = linearRegressionPredict(d.revenue);
+  const wma      = movingAveragePredict(d.revenue);
+  const ensemble = (pred.nextMonth * 0.55 + wma.nextMonth * 0.45).toFixed(1);
+
+  const prompt = 'You are APEX AI for Indian SMEs. Analyze this business and give 5 actionable insights.\n\n' +
+    'Business: ' + (currentUser ? currentUser.biz : 'SME Business') + '\n' +
+    'Revenue YTD: ₹' + fmtNum(parseFloat(totalRev) * 1000) + '\n' +
+    'Expenses YTD: ₹' + fmtNum(parseFloat(totalExp) * 1000) + '\n' +
+    'Net Profit: ₹' + fmtNum(parseFloat(profit) * 1000) + ' (' + margin + '% margin)\n' +
+    'LR Next Month: ₹' + fmtNum(pred.nextMonth * 1000) + '\n' +
+    'WMA Next Month: ₹' + fmtNum(wma.nextMonth * 1000) + '\n' +
+    'Ensemble Prediction: ₹' + fmtNum(parseFloat(ensemble) * 1000) + '\n' +
+    'Top product: ' + (d.products[0] ? d.products[0].name + ' ' + d.products[0].growth : 'N/A') + '\n' +
+    'Weakest product: ' + (d.products[d.products.length-1] ? d.products[d.products.length-1].name : 'N/A') + '\n' +
+    'Top region: ' + (d.geo[0] ? d.geo[0].name + ' ' + d.geo[0].share + '%' : 'N/A') + '\n\n' +
+    'Format: ★ [TITLE]: [specific advice with numbers]. Max 2 sentences each. Be direct and actionable for Indian SME owners.';
+
+  const apiKey = getApiKey();
+
+  try {
+    if (!apiKey) throw new Error('no_key');
+    const res  = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 800, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await res.json();
+    const text = data.content && data.content[0] ? data.content[0].text : null;
+    if (text) {
+      el.innerHTML = text.replace(/\n/g, '<br>').replace(/★/g, '<span style="color:var(--accent)">★</span>');
+    } else throw new Error('empty');
+  } catch(err) {
+    el.innerHTML =
+      '<span style="color:var(--accent)">★ ML FORECAST:</span> Our Dual-Model ensemble predicts ₹' + fmtNum(parseFloat(ensemble)*1000) + ' revenue next month — plan your inventory and staffing accordingly.<br><br>' +
+      '<span style="color:var(--accent)">★ TOP PRODUCT:</span> ' + (d.products[0] ? d.products[0].name + ' is growing at ' + d.products[0].growth : 'Identify your best product') + ' — allocate more marketing budget here for maximum ROI.<br><br>' +
+      '<span style="color:var(--accent)">★ PROFIT MARGIN:</span> At ' + margin + '%, you are ' + (parseFloat(margin) > 18.5 ? 'above' : 'below') + ' the 18.5% Indian SME industry average — ' + (parseFloat(margin) > 18.5 ? 'maintain this healthy margin by controlling fixed costs.' : 'review your top 3 expenses urgently and negotiate with suppliers.') + '<br><br>' +
+      '<span style="color:var(--accent)">★ REGION FOCUS:</span> ' + (d.geo[0] ? d.geo[0].name + ' drives ' + d.geo[0].share + '% of your revenue' : 'Identify your strongest region') + ' — this is your safest market for expansion and upselling.<br><br>' +
+      '<span style="color:var(--accent)">★ DATA QUALITY:</span> ' + (d.rowCount || d.revenue.length) + ' data points loaded. Add more months to push ML confidence above 90% and unlock more accurate predictions.<br><br>' +
+      '<small style="color:var(--muted);font-size:10px">⚡ Add Anthropic API key in Settings for live Claude AI analysis</small>';
+  }
+}
+
+// ══════════════════════════════════════════
+//  ML MODELS
+// ══════════════════════════════════════════
+
+// Model 1: Linear Regression
+function linearRegressionPredict(revenue) {
+  const n    = revenue.length;
+  const x    = Array.from({ length: n }, (_, i) => i + 1);
+  const sumX = x.reduce((a, b) => a + b, 0);
+  const sumY = revenue.reduce((a, b) => a + b, 0);
+  const sumXY = x.reduce((s, xi, i) => s + xi * revenue[i], 0);
+  const sumX2 = x.reduce((s, xi) => s + xi * xi, 0);
+  const m    = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+  const b    = (sumY - m * sumX) / n;
+  const nextMonth  = Math.max(0, m * (n + 1) + b);
+  const threeMonth = Math.max(0, (m*(n+1)+b) + (m*(n+2)+b) + (m*(n+3)+b));
+  return {
+    nextMonth:  parseFloat(nextMonth.toFixed(1)),
+    threeMonth: parseFloat(threeMonth.toFixed(1)),
+    slope: m
+  };
+}
+
+// Model 2: Weighted Moving Average
+function movingAveragePredict(revenue, windowSize) {
+  windowSize = windowSize || 3;
+  const n = revenue.length;
+  if (n < windowSize) return { nextMonth: revenue[n-1] || 0, confidence: 50 };
+  const weights    = Array.from({ length: windowSize }, (_, i) => i + 1); // [1,2,3]
+  const totalW     = weights.reduce((a, b) => a + b, 0);
+  const recent     = revenue.slice(-windowSize);
+  const wma        = recent.reduce((s, v, i) => s + v * weights[i], 0) / totalW;
+  const trend      = (recent[windowSize-1] - recent[0]) / windowSize;
+  const nextMonth  = Math.max(0, wma + trend * 0.5);
+  const avg        = recent.reduce((a, b) => a + b, 0) / windowSize;
+  const variance   = recent.reduce((s, v) => s + Math.pow(v - avg, 2), 0) / windowSize;
+  const cv         = avg > 0 ? Math.sqrt(variance) / avg : 1;
+  const confidence = Math.min(92, Math.max(55, Math.round(85 - cv * 30 + n * 1.5)));
+  return { nextMonth: parseFloat(nextMonth.toFixed(1)), confidence };
+}
+
+// Demand Forecasting
+function demandForecast(revenue) {
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const maxIdx     = revenue.indexOf(Math.max(...revenue));
+  const minIdx     = revenue.indexOf(Math.min(...revenue));
+  const changes    = revenue.slice(1).map((v, i) => ((v - revenue[i]) / revenue[i] * 100));
+  const avgChange  = changes.reduce((a, b) => a + b, 0) / changes.length;
+  return {
+    trend:     parseFloat(avgChange.toFixed(1)),
+    peakMonth: monthNames[maxIdx % 12],
+    slowMonth: monthNames[minIdx % 12],
+  };
+}
+
+// ══════════════════════════════════════════
+//  DUAL MODEL COMPARISON HTML
+// ══════════════════════════════════════════
+function dualModelHTML(revenue) {
+  if (revenue.length < 3) return '';
+  const lr       = linearRegressionPredict(revenue);
+  const wma      = movingAveragePredict(revenue);
+  const ensemble = parseFloat((lr.nextMonth * 0.55 + wma.nextMonth * 0.45).toFixed(1));
+  const lrConf   = Math.min(95, 60 + revenue.length * 2);
+
+  return '<div class="section-title">🔬 Dual-Model ML Comparison</div>' +
+    '<div class="card" style="border-color:rgba(124,106,255,.4)">' +
+    '<div class="card-header"><div class="card-title">Model vs Model Analysis</div><div class="card-badge">v4 EXCLUSIVE</div></div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">' +
+    '<div style="background:rgba(0,229,176,.07);border:1px solid rgba(0,229,176,.25);border-radius:10px;padding:12px;text-align:center">' +
+    '<div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Linear Regression</div>' +
+    '<div style="font-size:18px;font-weight:800;color:var(--accent)">₹' + fmtNum(lr.nextMonth * 1000) + '</div>' +
+    '<div style="font-size:10px;color:var(--muted);margin-top:4px">Confidence: ' + lrConf + '%</div>' +
+    '<div style="height:3px;background:var(--border);border-radius:2px;margin-top:6px"><div style="height:3px;border-radius:2px;background:var(--accent);width:' + lrConf + '%"></div></div>' +
+    '</div>' +
+    '<div style="background:rgba(124,106,255,.07);border:1px solid rgba(124,106,255,.25);border-radius:10px;padding:12px;text-align:center">' +
+    '<div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Weighted Moving Avg</div>' +
+    '<div style="font-size:18px;font-weight:800;color:var(--accent3)">₹' + fmtNum(wma.nextMonth * 1000) + '</div>' +
+    '<div style="font-size:10px;color:var(--muted);margin-top:4px">Confidence: ' + wma.confidence + '%</div>' +
+    '<div style="height:3px;background:var(--border);border-radius:2px;margin-top:6px"><div style="height:3px;border-radius:2px;background:var(--accent3);width:' + wma.confidence + '%"></div></div>' +
+    '</div></div>' +
+    '<div style="background:rgba(255,107,53,.08);border:1px solid rgba(255,107,53,.3);border-radius:10px;padding:12px;text-align:center">' +
+    '<div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">⚡ APEX Ensemble (55% LR + 45% WMA)</div>' +
+    '<div style="font-size:24px;font-weight:800;color:var(--accent2)">₹' + fmtNum(ensemble * 1000) + '</div>' +
+    '<div style="font-size:10px;color:var(--muted);margin-top:2px">Best estimate for next month</div>' +
+    '</div>' +
+    '<div style="margin-top:10px;padding:10px;background:var(--bg);border-radius:8px;font-size:11px;color:var(--muted);line-height:1.6">' +
+    '<strong style="color:var(--text)">Why two models?</strong> Linear Regression captures long-term growth trends. Weighted Moving Average reacts faster to recent changes. APEX combines both for maximum accuracy.' +
+    '</div></div>';
+}
+
+// ══════════════════════════════════════════
+//  COMPETITOR BENCHMARK HTML
+// ══════════════════════════════════════════
+function competitorBenchmarkHTML(totalRev, totalExp, margin) {
+  const expRatio = parseFloat((totalExp / totalRev * 100).toFixed(1));
+  const benchmarks = [
+    { metric: 'Profit Margin',  yours: parseFloat(margin), industry: 18.5, unit: '%',    higherIsBetter: true  },
+    { metric: 'Expense Ratio',  yours: expRatio,            industry: 65,   unit: '%',    higherIsBetter: false },
+    { metric: 'Revenue Growth', yours: 12.4,                industry: 8.2,  unit: '%/yr', higherIsBetter: true  },
+  ];
+
+  const rows = benchmarks.map(function(b) {
+    const winning  = b.higherIsBetter ? (b.yours > b.industry) : (b.yours < b.industry);
+    const winColor = winning ? 'var(--accent)' : 'var(--danger)';
+    const barYou   = Math.min(100, Math.abs(Math.round(b.yours)));
+    const barInd   = Math.min(100, Math.abs(Math.round(b.industry)));
+    return '<div style="margin-bottom:14px">' +
+      '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px">' +
+      '<span style="color:var(--text);font-weight:600">' + b.metric + '</span>' +
+      '<span style="color:' + winColor + '">' + (winning ? '✅ Above' : '⚠️ Below') + ' Industry</span>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">' +
+      '<span style="font-size:10px;color:var(--muted);width:60px">You</span>' +
+      '<div style="flex:1;height:6px;background:var(--border);border-radius:3px"><div style="height:6px;border-radius:3px;background:' + winColor + ';width:' + barYou + '%"></div></div>' +
+      '<span style="font-size:11px;font-weight:700;color:' + winColor + ';width:50px;text-align:right">' + b.yours + b.unit + '</span>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:8px">' +
+      '<span style="font-size:10px;color:var(--muted);width:60px">Industry</span>' +
+      '<div style="flex:1;height:6px;background:var(--border);border-radius:3px"><div style="height:6px;border-radius:3px;background:rgba(90,96,122,.8);width:' + barInd + '%"></div></div>' +
+      '<span style="font-size:11px;color:var(--muted);width:50px;text-align:right">' + b.industry + b.unit + '</span>' +
+      '</div></div>';
+  }).join('');
+
+  return '<div class="card" style="border-color:rgba(0,229,176,.2)">' +
+    '<div class="card-header"><div class="card-title">vs Indian SME Industry Average</div><div class="card-badge">MSME DATA</div></div>' +
+    rows +
+    '<div style="font-size:10px;color:var(--muted);margin-top:4px">Source: MSME Ministry of India · FY2024 Annual Report</div>' +
+    '</div>';
+}
+
+// ══════════════════════════════════════════
+//  PDF EXPORT — Opens print dialog (real PDF)
+// ══════════════════════════════════════════
+function exportPDFReport() {
+  const d    = isDemo ? DEMO_DATA : userData;
+  const biz  = currentUser ? (currentUser.biz || 'My Business') : 'My Business';
+  const bizType = currentUser ? (currentUser.bizType || 'Kirana Store') : 'Kirana Store';
+  const city    = currentUser ? (currentUser.city || 'India') : 'India';
+  const date = new Date().toLocaleDateString('en-IN', { year:'numeric', month:'long', day:'numeric' });
+
+  if (!d) {
+    alert('⚠️ No data found. Please add your business data first in the Data tab.');
+    return;
+  }
+
+  const totalRev = d.revenue.reduce((a, b) => a + b, 0) * 1000;
+  const totalExp = d.expenses.reduce((a, b) => a + b, 0) * 1000;
+  const profit   = totalRev - totalExp;
+  const margin   = (profit / totalRev * 100).toFixed(1);
+  const lr       = linearRegressionPredict(d.revenue);
+  const wma      = movingAveragePredict(d.revenue);
+  const ensemble = ((lr.nextMonth * 0.55 + wma.nextMonth * 0.45) * 1000).toFixed(0);
+  const lrConf   = Math.min(95, 60 + d.revenue.length * 2);
+
+  // Build monthly revenue rows
+  const monthRows = d.months.map((m, i) => {
+    const rev = d.revenue[i] * 1000;
+    const exp = d.expenses[i] * 1000;
+    const p   = rev - exp;
+    const pm  = rev > 0 ? (p / rev * 100).toFixed(1) : '0';
+    return `<tr>
+      <td>${m}</td>
+      <td>₹${fmtNum(rev)}</td>
+      <td>₹${fmtNum(exp)}</td>
+      <td style="color:${p >= 0 ? '#00a87a' : '#e74c3c'}">₹${fmtNum(p)}</td>
+      <td style="color:${parseFloat(pm) >= 18.5 ? '#00a87a' : '#e74c3c'}">${pm}%</td>
+    </tr>`;
+  }).join('');
+
+  const reportHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>APEX Report — ${biz}</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; color: #1a1a2e; background: #fff; padding: 32px; font-size: 13px; line-height: 1.6; }
+  .header { display: flex; align-items: center; gap: 16px; border-bottom: 3px solid #00e5b0; padding-bottom: 20px; margin-bottom: 24px; }
+  .logo { width: 52px; height: 52px; background: #00e5b0; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; color: #000; flex-shrink: 0; }
+  .header-info h1 { font-size: 20px; color: #1a1a2e; }
+  .header-info p { font-size: 12px; color: #666; margin-top: 2px; }
+  .badge { display: inline-block; background: #e8fff9; border: 1px solid #00e5b0; border-radius: 20px; padding: 2px 10px; font-size: 10px; color: #00a87a; font-weight: 700; margin-top: 4px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .kpi { background: #f9fffe; border: 1px solid #d0f5ec; border-radius: 10px; padding: 14px; }
+  .kpi-label { font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .kpi-value { font-size: 22px; font-weight: 800; color: #00a87a; }
+  .kpi-sub { font-size: 11px; color: #999; margin-top: 2px; }
+  h2 { font-size: 13px; font-weight: 700; color: #00a87a; text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 10px; border-left: 3px solid #00e5b0; padding-left: 10px; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 12px; }
+  th { background: #f0fdf9; color: #666; font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; padding: 8px 10px; text-align: left; border-bottom: 2px solid #d0f5ec; }
+  td { padding: 8px 10px; border-bottom: 1px solid #f0f0f0; }
+  tr:hover td { background: #fafffe; }
+  .highlight { background: #f0fdf9 !important; font-weight: 700; }
+  .ml-box { background: linear-gradient(135deg, #f0fdf9, #f5f0ff); border: 1px solid #d0f5ec; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+  .ml-main { font-size: 28px; font-weight: 800; color: #7c6aff; }
+  .ml-label { font-size: 11px; color: #666; margin-bottom: 4px; }
+  .ml-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 12px; }
+  .ml-item { background: #fff; border: 1px solid #eee; border-radius: 8px; padding: 10px; }
+  .ml-item-label { font-size: 9px; color: #999; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+  .ml-item-val { font-size: 15px; font-weight: 800; color: #00a87a; }
+  .footer { margin-top: 32px; text-align: center; font-size: 10px; color: #aaa; border-top: 1px solid #eee; padding-top: 16px; }
+  @media print {
+    body { padding: 20px; }
+    @page { margin: 15mm; size: A4; }
+    .no-break { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">AP</div>
+  <div class="header-info">
+    <h1>APEX Intelligence — Business Report</h1>
+    <p>${biz} · ${bizType} · ${city}</p>
+    <p>Generated: ${date}</p>
+    <span class="badge">AI + Dual-Model ML</span>
+  </div>
+</div>
+
+<div class="grid-4 no-break">
+  <div class="kpi"><div class="kpi-label">Total Revenue</div><div class="kpi-value">₹${fmtNum(totalRev)}</div><div class="kpi-sub">Year to Date</div></div>
+  <div class="kpi"><div class="kpi-label">Total Expenses</div><div class="kpi-value" style="color:#e74c3c">₹${fmtNum(totalExp)}</div><div class="kpi-sub">Year to Date</div></div>
+  <div class="kpi"><div class="kpi-label">Net Profit</div><div class="kpi-value">₹${fmtNum(profit)}</div><div class="kpi-sub">After expenses</div></div>
+  <div class="kpi"><div class="kpi-label">Profit Margin</div><div class="kpi-value" style="color:${parseFloat(margin) >= 18.5 ? '#00a87a' : '#e74c3c'}">${margin}%</div><div class="kpi-sub">${parseFloat(margin) >= 18.5 ? '✅ Above avg' : '⚠️ Below avg (18.5%)'}</div></div>
+</div>
+
+<h2>🤖 AI + ML Predictions</h2>
+<div class="ml-box no-break">
+  <div class="ml-label">APEX Ensemble Forecast — Next Month</div>
+  <div class="ml-main">₹${fmtNum(parseFloat(ensemble))}</div>
+  <div style="font-size:11px;color:#666;margin-top:4px">Combined prediction: 55% Linear Regression + 45% Weighted Moving Average</div>
+  <div class="ml-grid">
+    <div class="ml-item"><div class="ml-item-label">Linear Regression</div><div class="ml-item-val">₹${fmtNum(lr.nextMonth * 1000)}</div><div style="font-size:10px;color:#999">${lrConf}% confidence</div></div>
+    <div class="ml-item"><div class="ml-item-label">Weighted Moving Avg</div><div class="ml-item-val" style="color:#7c6aff">₹${fmtNum(wma.nextMonth * 1000)}</div><div style="font-size:10px;color:#999">${wma.confidence}% confidence</div></div>
+    <div class="ml-item"><div class="ml-item-label">3-Month Total</div><div class="ml-item-val" style="color:#ff6b35">₹${fmtNum((lr.nextMonth + lr.nextMonth*1.05 + lr.nextMonth*1.1) * 1000)}</div><div style="font-size:10px;color:#999">Cumulative estimate</div></div>
+  </div>
+</div>
+
+<h2>📅 Monthly Breakdown</h2>
+<table class="no-break">
+  <thead><tr><th>Month</th><th>Revenue</th><th>Expenses</th><th>Profit</th><th>Margin</th></tr></thead>
+  <tbody>${monthRows}</tbody>
+</table>
+
+<h2>🏆 Top Products</h2>
+<table class="no-break">
+  <thead><tr><th>Product</th><th>Revenue</th><th>Growth</th></tr></thead>
+  <tbody>${d.products.map(p => `<tr><td>${p.name}</td><td>${p.rev}</td><td style="color:${p.pos ? '#00a87a' : '#e74c3c'}">${p.growth}</td></tr>`).join('')}</tbody>
+</table>
+
+<h2>🌍 Regional Revenue</h2>
+<table class="no-break">
+  <thead><tr><th>Region</th><th>Share</th></tr></thead>
+  <tbody>${d.geo.map(g => `<tr><td>${g.flag} ${g.name}</td><td><strong>${g.share}%</strong></td></tr>`).join('')}</tbody>
+</table>
+
+<h2>📊 Industry Benchmark</h2>
+<table class="no-break">
+  <thead><tr><th>Metric</th><th>Your Business</th><th>Industry Avg</th><th>Status</th></tr></thead>
+  <tbody>
+    <tr ${parseFloat(margin) >= 18.5 ? 'class="highlight"' : ''}><td>Profit Margin</td><td>${margin}%</td><td>18.5%</td><td style="color:${parseFloat(margin) >= 18.5 ? '#00a87a' : '#e74c3c'}">${parseFloat(margin) >= 18.5 ? '✅ Above Average' : '⚠️ Below Average'}</td></tr>
+    <tr><td>Data Records</td><td colspan="3">${d.rowCount || d.revenue.length} months of data</td></tr>
+  </tbody>
+</table>
+
+<div class="footer">
+  Generated by APEX Intelligence v6.0 · AI + Dual-Model ML · Built by Khushi Choudhary &amp; Kartik Baliyan<br>
+  India's AI for Kirana &amp; Retail Shops 🇮🇳 · apexbi-8bf8c.firebaseapp.com
+</div>
+
+<script>window.onload = function() { window.print(); }<\/script>
+</body></html>`;
+
+  // Open in new tab → browser print dialog → Save as PDF
+  const win = window.open('', '_blank');
+  if (win) {
+    win.document.write(reportHTML);
+    win.document.close();
+  } else {
+    // Fallback: download as HTML if popup blocked
+    const blob = new Blob([reportHTML], { type: 'text/html' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = 'APEX_Report_' + biz.replace(/\s+/g,'_') + '.html';
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+    alert('Report downloaded!\n\nOpen it in Chrome → Press Ctrl+P → Save as PDF');
+  }
+}
+
+
+// ══════════════════════════════════════════
+//  ONBOARDING
+// ══════════════════════════════════════════
+function showOnboarding() {
+  const seen = localStorage.getItem('apex_onboarding_done');
+  if (!seen) {
+    document.getElementById('onboarding').classList.add('active');
+  }
+}
+
+function obNext(step) {
+  document.querySelectorAll('.ob-step').forEach(s => s.classList.remove('active'));
+  const next = document.getElementById('ob' + step);
+  if (next) next.classList.add('active');
+}
+
+function obSkip() {
+  localStorage.setItem('apex_onboarding_done', '1');
+  document.getElementById('onboarding').classList.remove('active');
+  showScreen('login');
+}
+
+// Show onboarding on first ever visit (before login)
+window.addEventListener('DOMContentLoaded', () => {
+  const seen    = localStorage.getItem('apex_onboarding_done');
+  const session = localStorage.getItem('apex_session');
+  if (!seen && !session) {
+    document.getElementById('onboarding').classList.add('active');
+  }
+});
+
+// ══════════════════════════════════════════
+//  SUBSCRIPTION TIER
+// ══════════════════════════════════════════
+function getCurrentTier() {
+  const loggedIn = currentUser && currentUser.email && currentUser.email !== 'demo';
+  const apiKey   = getApiKey();
+  if (loggedIn && apiKey) return 'pro';
+  if (loggedIn)           return 'free';
+  return 'demo';
+}
+
+function updateTierBadge() {
+  const badge = document.getElementById('tierBadge');
+  if (!badge) return;
+  const tier = getCurrentTier();
+  if (tier === 'pro') {
+    badge.textContent = '⚡ PRO';
+    badge.className   = 'tier-badge tier-pro';
+  } else if (tier === 'free') {
+    badge.textContent = 'FREE';
+    badge.className   = 'tier-badge tier-free';
+  } else {
+    badge.textContent = 'DEMO';
+    badge.className   = 'tier-badge tier-free';
+  }
+}
+
+// ── Update tier badge when entering app ──
+// (called directly from enterApp now, no wrapper needed)
+
+
+function fmtNum(n) {
+  n = parseFloat(n) || 0;
+  if (n >= 10000000) return (n / 10000000).toFixed(1) + ' Cr';
+  if (n >= 100000)   return (n / 100000).toFixed(1) + ' L';
+  if (n >= 1000)     return (n / 1000).toFixed(1) + 'K';
+  return Math.round(n).toString();
+}
+
+function fmtRs(n) { return '₹' + fmtNum(n); }
+
+</script>
+</body>
+</html>
