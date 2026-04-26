@@ -1942,8 +1942,8 @@ function processCSVData(rows) {
 
   const sorted   = Object.keys(byMonth).sort().slice(-12);
   const months   = sorted.map(k => k.substring(5, 7) || k.substring(0, 3));
-  const revenue  = sorted.map(k => parseFloat((byMonth[k].rev / 1000) .toFixed(2)));
-  const expenses = sorted.map(k => parseFloat((byMonth[k].exp / 1000) .toFixed(2)));
+  const revenue  = sorted.map(k => parseFloat((byMonth[k].rev / 1000).toFixed(2)));
+  const expenses = sorted.map(k => parseFloat((byMonth[k].exp / 1000).toFixed(2)));
 
   const byProd  = {};
   rows.forEach(r => { byProd[r.product] = (byProd[r.product] || 0) + r.revenue; });
@@ -1990,8 +1990,8 @@ async function saveManual() {
   // ── Update local userData object ──
   if (userData) {
     userData.months.push(month.substring(5, 7));
-    userData.revenue.push(parseFloat((rev / 1000) .toFixed(2)));
-    userData.expenses.push(parseFloat((exp / 1000) .toFixed(2)));
+    userData.revenue.push(parseFloat((rev / 1000).toFixed(2)));
+    userData.expenses.push(parseFloat((exp / 1000).toFixed(2)));
     if (userData.months.length > 12) {
       userData.months.shift(); userData.revenue.shift(); userData.expenses.shift();
     }
