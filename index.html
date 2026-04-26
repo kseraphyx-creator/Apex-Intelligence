@@ -1952,7 +1952,8 @@ function processCSVData(rows) {
   const products = sortedP.map(function(entry) {
     const name = entry[0], rev = entry[1];
     const g = ((Math.random() - 0.25) * 35).toFixed(1);
-    return { name, rev: '₹' + fmtNum(rev), growth: (g >= 0 ? '+' : ") + g + '%', pos: parseFloat(g) >= 0, bar: Math.round(rev / maxP * 100) };
+    return { name, rev: '₹' + fmtNum(rev), growth: (parseFloat(g) >= 0 ? '+' : '') + g + '%', pos: parseFloat(g) >= 0, bar: Math.round(rev / maxP * 100) };
+  });
 
   const byReg   = {};
   rows.forEach(r => { byReg[r.region] = (byReg[r.region] || 0) + r.revenue; });
